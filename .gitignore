@@ -1,6 +1,7 @@
 # Visual Studio 2015 user specific files
 .vs/
 .idea/.idea.Crunch/.idea
+.idea
 .vs/Crunch/v17
 
 # Compiled Object files
