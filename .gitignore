@@ -3,6 +3,7 @@
 .idea/.idea.Crunch/.idea
 .idea
 .vs/Crunch/v17
+DefaultEngine.ini
 
 # Compiled Object files
 *.slo
@@ -78,3 +79,4 @@ DerivedDataCache/*
 
 # Additional UE5 specific ignores
 *.pdb
+/.vsconfig
