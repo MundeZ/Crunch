@@ -6,6 +6,7 @@
 #include "Character/CCharacter.h"
 #include "CPlayerCharacter.generated.h"
 
+struct FInputActionValue;
 class UInputAction;
 class UInputMappingContext;
 /**
@@ -30,5 +31,10 @@ private:
 	UInputAction* JumpInputAction;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Input")
+	UInputAction* LookInputAction;
+
+	UPROPERTY(EditDefaultsOnly, Category="Input")
 	UInputMappingContext* GameplayInputMappingContext;
+
+	void HandleLoopInput(const FInputActionValue& InputActionValue);
 };
