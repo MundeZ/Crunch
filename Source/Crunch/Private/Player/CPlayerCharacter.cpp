@@ -4,6 +4,9 @@
 #include "Player/CPlayerCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/PlayerController.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 
 ACPlayerCharacter::ACPlayerCharacter()
 {
@@ -12,4 +15,30 @@ ACPlayerCharacter::ACPlayerCharacter()
 
 	ViewCam = CreateDefaultSubobject<UCameraComponent>(TEXT("ViewCam"));
 	ViewCam->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+}
+
+void ACPlayerCharacter::PawnClientRestart()
+{
+	Super::PawnClientRestart();
+
+	APlayerController* OwningPlayerController = GetController<APlayerController>();
+	if (OwningPlayerController)
+	{
+		UEnhancedInputLocalPlayerSubsystem* InputSubsystem = OwningPlayerController->GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+		if (InputSubsystem)
+		{
+			InputSubsystem->RemoveMappingContext(GameplayInputMappingContext);
+			InputSubsystem->AddMappingContext(GameplayInputMappingContext, 0);
+		}
+	}	
+}
+
+void ACPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	UEnhancedInputComponent* EnhancedInputComp = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	if (EnhancedInputComp)
+	{
+		EnhancedInputComp->BindAction(JumpInputAction, ETriggerEvent::Triggered, this, &ACPlayerCharacter::Jump);
+	}
 }
