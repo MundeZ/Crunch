@@ -16,25 +16,35 @@ UCLASS()
 class ACPlayerCharacter : public ACCharacter
 {
 	GENERATED_BODY()
+
 public:
 	ACPlayerCharacter();
 	virtual void PawnClientRestart() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category="View")
 	class USpringArmComponent* CameraBoom;
-	
+
 	UPROPERTY(VisibleDefaultsOnly, Category="View")
 	class UCameraComponent* ViewCam;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	UInputAction* JumpInputAction;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	UInputAction* LookInputAction;
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
+	UInputAction* MoveInputAction;
+	 
+	UPROPERTY(EditDefaultsOnly, Category="Input")
 	UInputMappingContext* GameplayInputMappingContext;
 
-	void HandleLoopInput(const FInputActionValue& InputActionValue);
+	void HandleLookInput(const FInputActionValue& InputActionValue);
+	void HandleMoveInput(const FInputActionValue& InputActionValue);
+	
+	FVector GetLookRightDir();
+	FVector GetLookFwdDir();
+	FVector GetMoveFwdDir();
 };
