@@ -19,7 +19,10 @@ void UCAnimInstance::NativeInitializeAnimation()
 void UCAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
-	
+	if (OwnerMovementComp)
+	{
+		Speed = OwnerCharacter->GetVelocity().Length();
+	}
 }
 
 void UCAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
