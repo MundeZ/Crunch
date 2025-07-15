@@ -81,5 +81,8 @@ FVector ACPlayerCharacter::GetLookFwdDir()
 
 FVector ACPlayerCharacter::GetMoveFwdDir()
 {
-	return FVector::CrossProduct(GetLookRightDir(), GetLookFwdDir());
+	FVector WorldUp = FVector::UpVector;
+	FVector RightDir = GetLookRightDir();
+	return FVector::CrossProduct(WorldUp, RightDir);
 }
+
