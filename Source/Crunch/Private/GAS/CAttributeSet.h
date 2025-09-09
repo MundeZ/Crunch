@@ -25,14 +25,24 @@ public:
 	ATTRIBUTE_ACCESSORS(UCAttributeSet, MaxHealth)
 	ATTRIBUTE_ACCESSORS(UCAttributeSet, Mana)
 	ATTRIBUTE_ACCESSORS(UCAttributeSet, MaxMana)
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 private:
-	UPROPERTY()
+	UPROPERTY(Replicated = OnRep_Health)
 	FGameplayAttributeData Health;
-	UPROPERTY()
+	UPROPERTY(Replicated = OnRep_MaxHealth)
 	FGameplayAttributeData MaxHealth;
-	UPROPERTY()
+	UPROPERTY(Replicated = OnRep_Mana)
 	FGameplayAttributeData Mana;
-	UPROPERTY()
+	UPROPERTY(Replicated = OnRep_MaxMana)
 	FGameplayAttributeData MaxMana;
+
+	UFUNCTION()
+	void OnRep_Health(const FGameplayAttributeData& OldValue);
+	UFUNCTION()
+	void OnRep_MaxHealth(const FGameplayAttributeData& OldValue);
+	UFUNCTION()
+	void OnRep_Mana(const FGameplayAttributeData& OldValue);
+	UFUNCTION()
+	void OnRep_MaxMana(const FGameplayAttributeData& OldValue);
 };
