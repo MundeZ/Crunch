@@ -7,20 +7,25 @@ public class Crunch : ModuleRules
 	public Crunch(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
-		PublicDependencyModuleNames.AddRange(new string[] {
+
+		PublicDependencyModuleNames.AddRange(new string[]
+		{
 			"Core",
 			"CoreUObject",
 			"Engine",
 			"InputCore",
+			"EnhancedInput"
+		});
+
+		PrivateDependencyModuleNames.AddRange(new string[]
+		{
 			"EnhancedInput",
 			"GameplayTags",
 			"GameplayAbilities",
-			"GameplayTasks"
-		});
-
-		PrivateDependencyModuleNames.AddRange(new string[] {
-			"EnhancedInput"
+			"GameplayTasks",
+			"UMG",
+			"Slate",
+			"SlateCore"
 		});
 	}
 }
