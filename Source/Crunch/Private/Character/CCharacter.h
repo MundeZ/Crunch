@@ -28,9 +28,10 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-
-	// Gameplay Ability System 
+	
+	/***********************************************************************/
+	/*                             Gameplay Ability System                 */
+	/***********************************************************************/
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
@@ -39,4 +40,12 @@ private:
 	class UCAbilitySystemComponent* CAbilitySystemComponent;
 	UPROPERTY()
 	class UCAttributeSet* CAttributeSet;
+	
+	/***********************************************************************/
+    /*                             UI                                      */
+	/***********************************************************************/
+	UPROPERTY(VisibleDefaultsOnly, Category = "Gameplay Ability")
+	class UWidgetComponent* OverHeadWidgetComponent;
+
+	void ConfigureOverHeadStatusWidget();
 };
