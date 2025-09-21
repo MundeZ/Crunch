@@ -6,6 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "ValueGauge.generated.h"
 
+struct FOnAttributeChangeData;
+struct FGameplayAttribute;
+class UAbilitySystemComponent;
 /**
  * 
  */
@@ -16,9 +19,16 @@ class UValueGauge : public UUserWidget
 
 public:
 	virtual void NativeConstruct() override;
+	void SetAndBoundToGameplayAttribute(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayAttribute& Attribute, const FGameplayAttribute& MaxAttribute);
 	void SetValue(float NewValue, float NewMaxValue);
 
 private:
+	void ValueChanged(const FOnAttributeChangeData& ChangeData);
+	void MaxValueChanged(const FOnAttributeChangeData& ChangeData);
+
+	float CachedValue;
+	float CachedMaxValue;
+	
 	UPROPERTY(EditAnywhere, Category = "Visual")
 	FLinearColor BarColor;
 	UPROPERTY(VisibleAnywhere, meta=(BindWidget))
