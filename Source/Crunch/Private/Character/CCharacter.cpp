@@ -6,6 +6,7 @@
 #include "Components/WidgetComponent.h"
 #include "GAS/CAbilitySystemComponent.h"
 #include "GAS/CAttributeSet.h"
+#include "Kismet/GameplayStatics.h"
 #include "Widgets/OverHeadStatsGauge.h"
 
 // Sets default values
@@ -49,7 +50,7 @@ void ACCharacter::PossessedBy(AController* NewController)
 
 // Called when the game starts or when spawned
 void ACCharacter::BeginPlay()
-{
+{ 
 	Super::BeginPlay();
 	ConfigureOverHeadStatusWidget();
 }
@@ -86,5 +87,19 @@ void ACCharacter::ConfigureOverHeadStatusWidget()
 	{
 		OverHeadStatsGauge->ConfigureWithASC(CAbilitySystemComponent);
 		OverHeadWidgetComponent->SetHiddenInGame(false);
+		GetWorldTimerManager().ClearTimer(HeadStatGaugeVisibilityTimerHandle);
+		GetWorldTimerManager().SetTimer(HeadStatGaugeVisibilityTimerHandle, this,
+		                                &ACCharacter::UpdateHeadStatGaugeVisibility,
+		                                HeadStatGaugeVisibilityCheckUpdateGap, true);
+	}
+}
+
+void ACCharacter::UpdateHeadStatGaugeVisibility()
+{
+	APawn* LocalPlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
+	if (LocalPlayerPawn)
+	{
+		float DistSquared = FVector::DistSquared(GetActorLocation(), LocalPlayerPawn->GetActorLocation());
+		OverHeadWidgetComponent->SetHiddenInGame(DistSquared > HeadStatGaugeVisibilityRangeSquared);
 	}
 }
