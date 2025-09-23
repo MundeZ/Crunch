@@ -12,9 +12,15 @@ class UCAbilitySystemComponent : public UAbilitySystemComponent
 	GENERATED_BODY()
 public:
 	void ApplyInitialEffects();
-
+	void GiveInitialAbilities();
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category="Gameplay Effects")
 	TArray<TSubclassOf<UGameplayEffect>> InitialEffects;
+
+	UPROPERTY(EditDefaultsOnly, Category="Gameplay Ability")
+	TArray<TSubclassOf<UGameplayAbility>> Ability;
+
+	UPROPERTY(EditDefaultsOnly, Category="Gameplay Ability")
+	TArray<TSubclassOf<UGameplayAbility>> BasicAbility;
 };
