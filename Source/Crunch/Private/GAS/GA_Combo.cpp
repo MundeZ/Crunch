@@ -3,8 +3,9 @@
 
 #include "GAS/GA_Combo.h"
 #include "GAS/CAbilitySystemStatics.h"
-#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "GameplayTagsManager.h"
+#include "Abilities/Tasks//AbilityTask_WaitInputPress.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include <Abilities/Tasks/AbilityTask_PlayMontageAndWait.h>
 
 UGA_Combo::UGA_Combo()
@@ -38,6 +39,7 @@ void UGA_Combo::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		WaitComboChangeEventTask->EventReceived.AddDynamic(this, &UGA_Combo::ComboChangedEventReceived);
 		WaitComboChangeEventTask->ReadyForActivation();
 	}
+	SetupWaitComboInputPress();
 }
 
 FGameplayTag UGA_Combo::GetComboChangedEventTag()
@@ -50,6 +52,30 @@ FGameplayTag UGA_Combo::GetComboChangedEventEndTag()
 	return FGameplayTag::RequestGameplayTag("ability.combo.change.end");
 }
 
+void UGA_Combo::SetupWaitComboInputPress()
+{
+	UAbilityTask_WaitInputPress* WaitInputPress = UAbilityTask_WaitInputPress::WaitInputPress(this);
+	WaitInputPress->OnPress.AddDynamic(this, &UGA_Combo::HandleInputPress);
+	WaitInputPress->ReadyForActivation();
+}
+
+void UGA_Combo::HandleInputPress(float TimeWaited)
+{
+	SetupWaitComboInputPress();
+	TryCommitCombo();
+}
+
+void UGA_Combo::TryCommitCombo()
+{
+	if (NextComboName == NAME_None) return;
+
+	UAnimInstance* OwnerAnimInst = GetOwnerAnimInstance();
+	if (!OwnerAnimInst) return;
+
+	OwnerAnimInst->Montage_SetNextSection(OwnerAnimInst->Montage_GetCurrentSection(ComboMontage), NextComboName,
+	                                      ComboMontage);
+}
+
 void UGA_Combo::ComboChangedEventReceived(FGameplayEventData Data)
 {
 	FGameplayTag EventTag = Data.EventTag;
@@ -60,7 +86,7 @@ void UGA_Combo::ComboChangedEventReceived(FGameplayEventData Data)
 		UE_LOG(LogTemp, Warning, TEXT("Next combo is cleared"))
 		return;
 	}
-	
+
 	TArray<FName> TagNames;
 	UGameplayTagsManager::Get().SplitGameplayTagFName(EventTag, TagNames);
 	NextComboName = TagNames.Last();
