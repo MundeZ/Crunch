@@ -4,11 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "AttributeSet.h"
+#include "GameplayEffectTypes.h"
 #include "ValueGauge.generated.h"
 
-struct FOnAttributeChangeData;
-struct FGameplayAttribute;
-class UAbilitySystemComponent;
 /**
  * 
  */
@@ -18,21 +17,23 @@ class UValueGauge : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	virtual void NativeConstruct() override;
-	void SetAndBoundToGameplayAttribute(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayAttribute& Attribute, const FGameplayAttribute& MaxAttribute);
+	virtual void NativePreConstruct() override;
+	void SetAndBoundToGameplayAttribute(class UAbilitySystemComponent* AbilitySystemComponent, const FGameplayAttribute& Attribute, const FGameplayAttribute& MaxAttribute);
 	void SetValue(float NewValue, float NewMaxValue);
 
 private:
-	void ValueChanged(const FOnAttributeChangeData& ChangeData);
-	void MaxValueChanged(const FOnAttributeChangeData& ChangeData);
+	void ValueChanged(const FOnAttributeChangeData& ChangedData);
+	void MaxValueChanged(const FOnAttributeChangeData& ChangedData);
 
 	float CachedValue;
 	float CachedMaxValue;
-	
+
 	UPROPERTY(EditAnywhere, Category = "Visual")
 	FLinearColor BarColor;
+
 	UPROPERTY(VisibleAnywhere, meta=(BindWidget))
 	class UProgressBar* ProgressBar;
+
 	UPROPERTY(VisibleAnywhere, meta=(BindWidget))
 	class UTextBlock* ValueText;
 };

@@ -2,7 +2,7 @@
 
 
 #include "Player/CPlayerController.h"
-#include "CPlayerCharacter.h"
+#include "Player/CPlayerCharacter.h"
 #include "Widgets/GameplayWidget.h"
 
 void ACPlayerController::OnPossess(APawn* NewPawn)
@@ -18,7 +18,6 @@ void ACPlayerController::OnPossess(APawn* NewPawn)
 void ACPlayerController::AcknowledgePossession(APawn* NewPawn)
 {
 	Super::AcknowledgePossession(NewPawn);
-
 	CPlayerCharacter = Cast<ACPlayerCharacter>(NewPawn);
 	if (CPlayerCharacter)
 	{
@@ -29,7 +28,8 @@ void ACPlayerController::AcknowledgePossession(APawn* NewPawn)
 
 void ACPlayerController::SpawnGameplayWidget()
 {
-	if (!IsLocalPlayerController()) return;
+	if (!IsLocalPlayerController())
+		return;
 
 	GameplayWidget = CreateWidget<UGameplayWidget>(this, GameplayWidgetClass);
 	if (GameplayWidget)

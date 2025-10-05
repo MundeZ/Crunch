@@ -14,12 +14,12 @@ UCLASS()
 class UAN_SendTargetGroup : public UAnimNotify
 {
 	GENERATED_BODY()
-public:
+public:	
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
+
 private:
 	UPROPERTY(EditAnywhere, Category = "Gameplay Ability")
 	FGameplayTag EventTag;
-	
 	UPROPERTY(EditAnywhere, Category = "Gameplay Ability")
-	TArray<FName> TargetSocketName;
+	TArray<FName> TargetSocketNames;
 };

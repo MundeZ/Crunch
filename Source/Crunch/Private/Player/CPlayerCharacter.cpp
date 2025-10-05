@@ -2,38 +2,35 @@
 
 
 #include "Player/CPlayerCharacter.h"
-
 #include "AbilitySystemComponent.h"
+#include "Camera/CameraComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Camera/CameraComponent.h"
 #include "GameFramework/PlayerController.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
 
 ACPlayerCharacter::ACPlayerCharacter()
-{
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraBoom->SetupAttachment(RootComponent);
+{	
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>("Camera Boom");
+	CameraBoom->SetupAttachment(GetRootComponent());
 	CameraBoom->bUsePawnControlRotation = true;
 
-	ViewCam = CreateDefaultSubobject<UCameraComponent>(TEXT("ViewCam"));
+	ViewCam = CreateDefaultSubobject<UCameraComponent>("View Cam");
 	ViewCam->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
+	GetCharacterMovement()->RotationRate = FRotator(0.f, 720.f, 0.f);
 }
 
 void ACPlayerCharacter::PawnClientRestart()
 {
 	Super::PawnClientRestart();
-
 	APlayerController* OwningPlayerController = GetController<APlayerController>();
 	if (OwningPlayerController)
 	{
-		UEnhancedInputLocalPlayerSubsystem* InputSubsystem = OwningPlayerController->GetLocalPlayer()->GetSubsystem<
-			UEnhancedInputLocalPlayerSubsystem>();
+		UEnhancedInputLocalPlayerSubsystem* InputSubsystem = OwningPlayerController->GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 		if (InputSubsystem)
 		{
 			InputSubsystem->RemoveMappingContext(GameplayInputMappingContext);
@@ -42,31 +39,29 @@ void ACPlayerCharacter::PawnClientRestart()
 	}
 }
 
-void ACPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+void ACPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	UEnhancedInputComponent* EnhancedInputComp = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	if (EnhancedInputComp)
 	{
 		EnhancedInputComp->BindAction(JumpInputAction, ETriggerEvent::Triggered, this, &ACPlayerCharacter::Jump);
-		EnhancedInputComp->BindAction(LookInputAction, ETriggerEvent::Triggered, this,
-		                              &ACPlayerCharacter::HandleLookInput);
-		EnhancedInputComp->BindAction(MoveInputAction, ETriggerEvent::Triggered, this,
-		                              &ACPlayerCharacter::HandleMoveInput);
+		EnhancedInputComp->BindAction(LookInputAction, ETriggerEvent::Triggered, this, &ACPlayerCharacter::HandleLookInput);
+		EnhancedInputComp->BindAction(MoveInputAction, ETriggerEvent::Triggered, this, &ACPlayerCharacter::HandleMoveInput);
 
 		for (const TPair<ECAbilityInputID, UInputAction*>& InputActionPair : GameplayAbilityInputActions)
 		{
-			EnhancedInputComp->BindAction(InputActionPair.Value, ETriggerEvent::Triggered, this,
-							  &ACPlayerCharacter::HandleAbilityInput, InputActionPair.Key );
+			EnhancedInputComp->BindAction(InputActionPair.Value, ETriggerEvent::Triggered, this, &ACPlayerCharacter::HandleAbilityInput, InputActionPair.Key);
 		}
-	};
+	}
 }
 
 void ACPlayerCharacter::HandleLookInput(const FInputActionValue& InputActionValue)
 {
 	FVector2D InputVal = InputActionValue.Get<FVector2D>();
-	AddControllerYawInput(InputVal.X);
+
 	AddControllerPitchInput(-InputVal.Y);
+	AddControllerYawInput(InputVal.X);
 }
 
 void ACPlayerCharacter::HandleMoveInput(const FInputActionValue& InputActionValue)
@@ -74,39 +69,34 @@ void ACPlayerCharacter::HandleMoveInput(const FInputActionValue& InputActionValu
 	FVector2D InputVal = InputActionValue.Get<FVector2D>();
 	InputVal.Normalize();
 	
-	AddMovementInput(GetMoveFwdDir() * InputVal.Y + GetLookRightDir() * InputVal.X);
+	AddMovementInput(GetMoveFwdDir()*InputVal.Y + GetLookRightDir() * InputVal.X);
 }
 
 void ACPlayerCharacter::HandleAbilityInput(const FInputActionValue& InputActionValue, ECAbilityInputID InputID)
 {
 	bool bPressed = InputActionValue.Get<bool>();
+	if (bPressed)
 	{
-		if (bPressed)
-		{
-			GetAbilitySystemComponent()->AbilityLocalInputPressed((int32)InputID);
-		}
-		else
-		{
-			GetAbilitySystemComponent()->AbilityLocalInputReleased((int32)InputID);
-		}
+		GetAbilitySystemComponent()->AbilityLocalInputPressed((int32)InputID);
+	}
+	else
+	{
+		GetAbilitySystemComponent()->AbilityLocalInputReleased((int32)InputID);
 	}
 }
 
-
-FVector ACPlayerCharacter::GetLookRightDir()
+FVector ACPlayerCharacter::GetLookRightDir() const
 {
 	return ViewCam->GetRightVector();
 }
 
-FVector ACPlayerCharacter::GetLookFwdDir()
+FVector ACPlayerCharacter::GetLookFwdDir() const
 {
 	return ViewCam->GetForwardVector();
 }
 
-FVector ACPlayerCharacter::GetMoveFwdDir()
+FVector ACPlayerCharacter::GetMoveFwdDir() const
 {
-	FVector WorldUp = FVector::UpVector;
-	FVector RightDir = GetLookRightDir();
-	return FVector::CrossProduct(WorldUp, RightDir);
+	return FVector::CrossProduct(GetLookRightDir(), FVector::UpVector);
 }
 

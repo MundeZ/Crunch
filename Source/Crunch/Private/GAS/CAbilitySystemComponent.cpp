@@ -5,7 +5,8 @@
 
 void UCAbilitySystemComponent::ApplyInitialEffects()
 {
-	if (!GetOwner() || !GetOwner()->HasAuthority()) { return; }
+	if (!GetOwner() || !GetOwner()->HasAuthority())
+		return;
 
 	for (const TSubclassOf<UGameplayEffect>& EffectClass : InitialEffects)
 	{
@@ -16,15 +17,17 @@ void UCAbilitySystemComponent::ApplyInitialEffects()
 
 void UCAbilitySystemComponent::GiveInitialAbilities()
 {
-	if (!GetOwner() || !GetOwner()->HasAuthority()) { return; }
+	if (!GetOwner() || !GetOwner()->HasAuthority())
+		return;
 
-	for (const TPair<ECAbilityInputID, TSubclassOf<UGameplayAbility>>& AbilityPair : Ability)
+	for (const TPair<ECAbilityInputID,TSubclassOf<UGameplayAbility>>& AbilityPair : Abilities)
 	{
 		GiveAbility(FGameplayAbilitySpec(AbilityPair.Value, 0, (int32)AbilityPair.Key, nullptr));
 	}
 
-	for (const TPair<ECAbilityInputID, TSubclassOf<UGameplayAbility>>& AbilityPair : BasicAbility)
+	for (const TPair<ECAbilityInputID,TSubclassOf<UGameplayAbility>>& AbilityPair : BasicAbilities)
 	{
 		GiveAbility(FGameplayAbilitySpec(AbilityPair.Value, 1, (int32)AbilityPair.Key, nullptr));
 	}
+
 }

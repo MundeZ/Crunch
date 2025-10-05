@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
+#include "GameplayTagContainer.h"
 #include "AN_SendGameplayEvent.generated.h"
 
 /**
@@ -19,5 +19,5 @@ public:
 private:
 	UPROPERTY(EditAnywhere, Category = "Gameplay Ability")
 	FGameplayTag EventTag;
-	virtual FString GetNotifyName_Implementation() const override;
+	virtual FString GetNotifyName_Implementation() const; 
 };

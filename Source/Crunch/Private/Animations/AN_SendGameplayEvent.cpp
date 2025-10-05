@@ -9,13 +9,14 @@ void UAN_SendGameplayEvent::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	if (!MeshComp->GetOwner()) return; 
+	if (!MeshComp->GetOwner())
+		return;
 
 	UAbilitySystemComponent* OwnerASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(MeshComp->GetOwner());
-	if (!OwnerASC) return;
-	
+	if (!OwnerASC)
+		return;
+
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(MeshComp->GetOwner(), EventTag, FGameplayEventData());
-	
 }
 
 FString UAN_SendGameplayEvent::GetNotifyName_Implementation() const
@@ -23,8 +24,9 @@ FString UAN_SendGameplayEvent::GetNotifyName_Implementation() const
 	if (EventTag.IsValid())
 	{
 		TArray<FName> TagNames;
-		UGameplayTagsManager::Get().SplitGameplayTagFName(EventTag,TagNames);
+		UGameplayTagsManager::Get().SplitGameplayTagFName(EventTag, TagNames);
 		return TagNames.Last().ToString();
 	}
+
 	return "None";
 }

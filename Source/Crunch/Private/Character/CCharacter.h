@@ -18,46 +18,44 @@ public:
 	void ServerSideInit();
 	void ClientSideInit();
 	bool IsLocallyControlledByPlayer() const;
-	virtual void PossessedBy(AController* NewController) override;
-	
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void PossessedBy(AController* NewController) override;
 
-public:
+public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
-	/***********************************************************************/
-	/*                             Gameplay Ability System                 */
-	/***********************************************************************/
+	/**********************************************************************/
+	/*                             Gameplay Ability                       */
+	/**********************************************************************/
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Gameplay Ability")
 	class UCAbilitySystemComponent* CAbilitySystemComponent;
 	UPROPERTY()
 	class UCAttributeSet* CAttributeSet;
-	
-	/***********************************************************************/
-    /*                             UI                                      */
-	/***********************************************************************/
+	/**********************************************************************/
+	/*                              UI                                    */
+	/**********************************************************************/
+private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "UI")
 	class UWidgetComponent* OverHeadWidgetComponent;
-
 	void ConfigureOverHeadStatusWidget();
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
-	float HeadStatGaugeVisibilityCheckUpdateGap = 1.f;
+	float HeadStatGaugeVisiblityCheckUpdateGap = 1.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
-	float HeadStatGaugeVisibilityRangeSquared = 10000000.f;
+	float HeadStatGaugeVisiblityRangeSquared = 10000000.f;
 	
-	FTimerHandle HeadStatGaugeVisibilityTimerHandle;
-	
-	void UpdateHeadStatGaugeVisibility();
+	FTimerHandle HeadStatGaugeVisibilityUpdateTimerHandle;
+
+	void UpdateHeadGaugeVisibility();
 };

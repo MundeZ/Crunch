@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AugmentWebviewStateStore">
+    <option name="stateMap">
+      <map>
+        <entry key="CHAT_STATE" value="{&quot;currentConversationId&quot;:&quot;41135778-0a02-4e8f-9492-ea13b0581668&quot;,&quot;agentExecutionMode&quot;:&quot;manual&quot;,&quot;isPanelCollapsed&quot;:true,&quot;displayedAnnouncements&quot;:[],&quot;conversations&quot;:{&quot;41135778-0a02-4e8f-9492-ea13b0581668&quot;:{&quot;id&quot;:&quot;41135778-0a02-4e8f-9492-ea13b0581668&quot;,&quot;createdAtIso&quot;:&quot;2025-09-23T15:19:32.164Z&quot;,&quot;lastInteractedAtIso&quot;:&quot;2025-09-30T14:33:49.948Z&quot;,&quot;chatHistory&quot;:[{&quot;chatItemType&quot;:&quot;exchange-pointer&quot;,&quot;exchangeUuid&quot;:&quot;4dddbfff-519a-4c4b-b82c-bcfc635958d5&quot;,&quot;timestamp&quot;:&quot;2025-09-23T15:21:04.299Z&quot;,&quot;request_message&quot;:&quot;С сделал blue print для тестирования, в лог при нажатии левой кнопки мыши должен выводится текст Casting GA Combo но ничего не происходит. Почему не появляется лог ?\n\n\n\n&quot;,&quot;status&quot;:&quot;success&quot;,&quot;seen_state&quot;:&quot;unseen&quot;}],&quot;feedbackStates&quot;:{&quot;temp-fe-0a6f9310-d766-43a2-bdfb-e311e41624b3&quot;:{&quot;selectedRating&quot;:0,&quot;feedbackNote&quot;:&quot;&quot;}},&quot;toolUseStates&quot;:{},&quot;draftExchange&quot;:{&quot;request_message&quot;:&quot;При&quot;,&quot;rich_text_json_repr&quot;:{&quot;type&quot;:&quot;doc&quot;,&quot;content&quot;:[{&quot;type&quot;:&quot;paragraph&quot;,&quot;content&quot;:[{&quot;type&quot;:&quot;text&quot;,&quot;text&quot;:&quot;При&quot;}]}]},&quot;mentioned_items&quot;:[],&quot;status&quot;:&quot;draft&quot;},&quot;requestIds&quot;:[],&quot;isPinned&quot;:false,&quot;isShareable&quot;:true,&quot;extraData&quot;:{&quot;hasDirtyEdits&quot;:false},&quot;personaType&quot;:0,&quot;rootTaskUuid&quot;:&quot;e3b30fad-61f5-486c-91f9-3f31bac17674&quot;}}}" />
+      </map>
+    </option>
+  </component>
+</project>

@@ -1,9 +1,5 @@
 # Visual Studio 2015 user specific files
 .vs/
-.idea/.idea.Crunch/.idea
-.idea
-.vs/Crunch/v17
-DefaultEngine.ini
 
 # Compiled Object files
 *.slo
@@ -51,7 +47,7 @@ SourceArt/**/*.tga
 
 # Binary Files
 Binaries/*
-Plugins/*/Binaries/*
+Plugins/**/Binaries/*
 
 # Builds
 Build/*
@@ -72,11 +68,7 @@ Saved/*
 
 # Compiled source files for the engine to use
 Intermediate/*
-Plugins/*/Intermediate/*
+Plugins/**/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
-
-# Additional UE5 specific ignores
-*.pdb
-/.vsconfig
