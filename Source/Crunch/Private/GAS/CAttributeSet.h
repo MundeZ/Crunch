@@ -24,7 +24,10 @@ public:
     ATTRIBUTE_ACCESSORS(UCAttributeSet, MaxHealth)
     ATTRIBUTE_ACCESSORS(UCAttributeSet, Mana)
     ATTRIBUTE_ACCESSORS(UCAttributeSet, MaxMana)
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 	virtual void GetLifetimeReplicatedProps( TArray< class FLifetimeProperty > & OutLifetimeProps ) const override;
+
 private:
 	UPROPERTY(ReplicatedUsing = OnRep_Health)
 	FGameplayAttributeData Health;
