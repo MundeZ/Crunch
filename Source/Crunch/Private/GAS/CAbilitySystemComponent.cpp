@@ -2,6 +2,12 @@
 
 
 #include "GAS/CAbilitySystemComponent.h"
+#include "GAS/CAttributeSet.h"
+
+UCAbilitySystemComponent::UCAbilitySystemComponent()
+{
+	GetGameplayAttributeValueChangeDelegate(UCAttributeSet::GetHealthAttribute()).AddUObject(this, &UCAbilitySystemComponent::HealthUpdated);
+}
 
 void UCAbilitySystemComponent::ApplyInitialEffects()
 {
@@ -30,4 +36,28 @@ void UCAbilitySystemComponent::GiveInitialAbilities()
 		GiveAbility(FGameplayAbilitySpec(AbilityPair.Value, 1, (int32)AbilityPair.Key, nullptr));
 	}
 
+}
+
+void UCAbilitySystemComponent::ApplyFullStatEffect()
+{
+	AuthApplyGameplayEffect(FullStatEffect);
+}
+
+void UCAbilitySystemComponent::AuthApplyGameplayEffect(TSubclassOf<UGameplayEffect> GameplayEffect, int Level)
+{
+	if (GetOwner() && GetOwner()->HasAuthority())
+	{
+		FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingSpec(GameplayEffect, Level, MakeEffectContext());
+		ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
+	}
+}
+
+void UCAbilitySystemComponent::HealthUpdated(const FOnAttributeChangeData& ChangedData)
+{
+	if (!GetOwner()) return;
+
+	if (ChangedData.NewValue <= 0 && GetOwner()->HasAuthority() && DeathEffect)
+	{
+		AuthApplyGameplayEffect(DeathEffect);
+	}
 }

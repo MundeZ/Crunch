@@ -53,4 +53,9 @@ private:
 	void HandleMoveInput(const FInputActionValue& InputActionValue);
 	void HandleAbilityInput(const FInputActionValue& InputActionValue, ECAbilityInputID InputID);
 
+	/*************************************************************/
+	/*                           Death and Respawn               */
+	/*************************************************************/
+	virtual void OnDead() override;
+	virtual void OnRespawn() override;
 };
