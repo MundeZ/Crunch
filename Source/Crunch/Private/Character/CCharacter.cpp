@@ -12,6 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/OverHeadStatsGauge.h"
 #include "GameplayTagContainer.h"
+#include "Net/UnrealNetwork.h"
 // Sets default values
 ACCharacter::ACCharacter()
 {
@@ -42,6 +43,12 @@ void ACCharacter::ClientSideInit()
 bool ACCharacter::IsLocallyControlledByPlayer() const
 {
 	return GetLocalRole() == ROLE_AutonomousProxy || GetRemoteRole() == ROLE_AutonomousProxy;
+}
+
+void ACCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ACCharacter, TeamID)
 }
 
 // Called when the game starts or when spawned
@@ -187,5 +194,15 @@ void ACCharacter::OnDead()
 
 void ACCharacter::OnRespawn()
 {
+}
+
+void ACCharacter::SetGenericTeamId(const FGenericTeamId& NewTeamID)
+{
+	TeamID = NewTeamID;
+}
+
+FGenericTeamId ACCharacter::GetGenericTeamId() const
+{
+	return TeamID;
 }
 
