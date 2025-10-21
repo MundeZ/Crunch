@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "CAIController.generated.h"
 
+struct FAIStimulus;
 /**
  * 
  */
@@ -17,11 +18,29 @@ class ACAIController : public AAIController
 public:
 	ACAIController();
 	virtual void OnPossess(APawn* NewPawn) override;
+	virtual void BeginPlay() override;
 	
 private:
+	UPROPERTY(EditDefaultsOnly, Category = "AI Behavior")
+	class UBehaviorTree* BehaviorTree;
+	UPROPERTY(EditDefaultsOnly, Category = "AI Behavior")
+	FName TargetBlackBoardKeyName = "Target";
+	
+	float SightRadius;
 	UPROPERTY(VisibleDefaultsOnly, Category = "Perception")
 	class UAIPerceptionComponent* AIPerceptionComponent;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Perception")
 	class UAISenseConfig_Sight* SightConfig;
+
+	UFUNCTION()
+	void TargetPerceptionUpdated(AActor* TargetActor, FAIStimulus Stimulus);
+	
+	UFUNCTION()
+	void TargetForgotten(AActor* ForgottenActor);
+	
+	const UObject* GetCurrentTarget() const;
+	void SetCurrentTarget(AActor* NewTarget);
+
+	AActor* GetNextPerceivedActor() const;
 };

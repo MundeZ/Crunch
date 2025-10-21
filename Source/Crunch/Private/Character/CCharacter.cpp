@@ -13,6 +13,7 @@
 #include "Widgets/OverHeadStatsGauge.h"
 #include "GameplayTagContainer.h"
 #include "Net/UnrealNetwork.h"
+
 // Sets default values
 ACCharacter::ACCharacter()
 {
