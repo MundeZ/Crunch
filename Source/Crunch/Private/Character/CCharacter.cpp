@@ -13,6 +13,7 @@
 #include "Widgets/OverHeadStatsGauge.h"
 #include "GameplayTagContainer.h"
 #include "Net/UnrealNetwork.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
 
 // Sets default values
 ACCharacter::ACCharacter()
@@ -27,6 +28,8 @@ ACCharacter::ACCharacter()
 	OverHeadWidgetComponent->SetupAttachment(GetRootComponent());
 
 	BindGASChangeDelegates();
+
+	PerceptionStimuliSourceComponent->
 }
 
 void ACCharacter::ServerSideInit()
