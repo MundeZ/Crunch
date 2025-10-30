@@ -178,12 +178,14 @@ void ACCharacter::StartDeathSequence()
 	
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetAIPerceptionStimuliSourceEnabled(false);
 }
 
 void ACCharacter::Respawn()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Respawn"));
 	OnRespawn();
+	SetAIPerceptionStimuliSourceEnabled(true);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	GetMesh()->GetAnimInstance()->StopAllMontages(0.f);
@@ -222,5 +224,20 @@ void ACCharacter::SetGenericTeamId(const FGenericTeamId& NewTeamID)
 FGenericTeamId ACCharacter::GetGenericTeamId() const
 {
 	return TeamID;
+}
+
+void ACCharacter::SetAIPerceptionStimuliSourceEnabled(bool bIsEnabled)
+{
+	if (!PerceptionStimuliSourceComponent) return;
+
+	if (bIsEnabled)
+	{
+		PerceptionStimuliSourceComponent->RegisterWithPerceptionSystem();
+	}
+	else
+	{
+		PerceptionStimuliSourceComponent->UnregisterFromPerceptionSystem();
+	}
+	
 }
 
