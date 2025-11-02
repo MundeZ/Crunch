@@ -4,11 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameplayTagContainer.h"
 #include "AbilitySystemInterface.h"
 #include "GenericTeamAgentInterface.h"
 #include "CCharacter.generated.h"
-
-struct FGameplayTag;
 
 UCLASS()
 class ACCharacter : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface
@@ -25,6 +24,7 @@ public:
 
 protected:
 	// Called when the game starts or when spawned
+
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
 
@@ -43,6 +43,7 @@ public:
 private:
 	void BindGASChangeDelegates();
 	void DeathTagUpdated(const FGameplayTag Tag, int32 NewCount);
+
 	UPROPERTY(VisibleDefaultsOnly, Category = "Gameplay Ability")
 	class UCAbilitySystemComponent* CAbilitySystemComponent;
 	UPROPERTY()
@@ -66,20 +67,29 @@ private:
 	void UpdateHeadGaugeVisibility();
 	void SetStatusGaugeEnabled(bool bIsEnabled);
 	/**********************************************************************/
-	/*                    Death and Respawn                               */
+	/*                             Death and Respawn                      */
 	/**********************************************************************/
+	FTransform MeshRelativeTransform;
+	UPROPERTY(EditDefaultsOnly, Category = "Death")
+	float DeathMontageFinishTimeShift = -0.8f;
 	UPROPERTY(EditDefaultsOnly, Category = "Death")
 	UAnimMontage* DeathMontage;
 
+	FTimerHandle DeathMontageTimerHandle;
+
+	void DeathMontageFinished();
+	void SetRagdollEnabled(bool bIsEnabled);
+
 	void PlayDeathAnimation();
-	
+
 	void StartDeathSequence();
 	void Respawn();
 
 	virtual void OnDead();
 	virtual void OnRespawn();
+
 	/**********************************************************************/
-	/*                                 Team                               */
+	/*                               Team                                 */
 	/**********************************************************************/
 public:
 	/** Assigns Team Agent to given TeamID */
@@ -90,9 +100,8 @@ public:
 private:
 	UPROPERTY(Replicated)
 	FGenericTeamId TeamID;
-
 	/**********************************************************************/
-	/*                                 AI                                 */
+	/*                               AI                                 */
 	/**********************************************************************/
 private:
 	void SetAIPerceptionStimuliSourceEnabled(bool bIsEnabled);

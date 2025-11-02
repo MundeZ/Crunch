@@ -2,19 +2,20 @@
 
 
 #include "Framework/CGameMode.h"
-#include "EngineUtils.h"
 #include "GameFramework/PlayerStart.h"
+#include "EngineUtils.h"
 
 APlayerController* ACGameMode::SpawnPlayerController(ENetRole InRemoteRole, const FString& Options)
 {
 	APlayerController* NewPlayerController = Super::SpawnPlayerController(InRemoteRole, Options);
-	IGenericTeamAgentInterface* NewPlayerInterface = Cast<IGenericTeamAgentInterface>(NewPlayerController);
-	FGenericTeamId TeamID = GetTeamIDForPlayer(NewPlayerController);
-	if (NewPlayerInterface)
+	IGenericTeamAgentInterface* NewPlayerTeamInterface = Cast<IGenericTeamAgentInterface>(NewPlayerController);
+	FGenericTeamId TeamId = GetTeamIDForPlayer(NewPlayerController);
+	if (NewPlayerTeamInterface)
 	{
-		NewPlayerInterface->SetGenericTeamId(TeamID);
+		NewPlayerTeamInterface->SetGenericTeamId(TeamId);
 	}
-	NewPlayerController->StartSpot = FindNextStartSpotForTeam(TeamID);
+
+	NewPlayerController->StartSpot = FindNextStartSpotForTeam(TeamId);
 	return NewPlayerController;
 }
 
@@ -27,12 +28,14 @@ FGenericTeamId ACGameMode::GetTeamIDForPlayer(const APlayerController* PlayerCon
 
 AActor* ACGameMode::FindNextStartSpotForTeam(const FGenericTeamId& TeamID) const
 {
-	const FName* StartSpotTag = TeamStartSpotMap.Find(TeamID);
+	const FName* StartSpotTag = TeamStartSpotTagMap.Find(TeamID);
 	if (!StartSpotTag)
 	{
 		return nullptr;
 	}
+
 	UWorld* World = GetWorld();
+	
 	for (TActorIterator<APlayerStart> It(World); It; ++It)
 	{
 		if (It->PlayerStartTag == *StartSpotTag)
@@ -41,5 +44,6 @@ AActor* ACGameMode::FindNextStartSpotForTeam(const FGenericTeamId& TeamID) const
 			return *It;
 		}
 	}
+
 	return nullptr;
 }

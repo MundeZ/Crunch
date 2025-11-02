@@ -2,14 +2,14 @@
 
 
 #include "AI/CAIController.h"
-#include "Perception/AIPerceptionComponent.h"
-#include "Perception/AISenseConfig.h"
-#include "Perception/AISenseConfig_Sight.h"
 #include "Character/CCharacter.h"
-#include "BehaviorTree/BlackboardComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "GAS/CAbilitySystemStatics.h"
+#include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISenseConfig_Sight.h"
+
 ACAIController::ACAIController()
 {
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("AI Perception Component");
@@ -18,9 +18,12 @@ ACAIController::ACAIController()
 	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
 	SightConfig->DetectionByAffiliation.bDetectFriendlies = false;
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = false;
+
 	SightConfig->SightRadius = 1000.f;
 	SightConfig->LoseSightRadius = 1200.f;
+
 	SightConfig->SetMaxAge(5.f);
+
 	SightConfig->PeripheralVisionAngleDegrees = 180.f;
 
 	AIPerceptionComponent->ConfigureSense(*SightConfig);
@@ -63,13 +66,13 @@ void ACAIController::TargetPerceptionUpdated(AActor* TargetActor, FAIStimulus St
 
 void ACAIController::TargetForgotten(AActor* ForgottenActor)
 {
-	if (!ForgottenActor) return;
-	
+	if (!ForgottenActor)
+		return;
+
 	if (GetCurrentTarget() == ForgottenActor)
 	{
-		SetCurrentTarget(GetNextPerceivedActor());	
+		SetCurrentTarget(GetNextPerceivedActor());
 	}
-	
 }
 
 const UObject* ACAIController::GetCurrentTarget() const
@@ -77,7 +80,7 @@ const UObject* ACAIController::GetCurrentTarget() const
 	const UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
 	if (BlackboardComponent)
 	{
-		return GetBlackboardComponent()->GetValueAsObject(TargetBlackBoardKeyName);
+		return GetBlackboardComponent()->GetValueAsObject(TargetBlackboardKeyName);
 	}
 	return nullptr;
 }
@@ -86,16 +89,15 @@ void ACAIController::SetCurrentTarget(AActor* NewTarget)
 {
 	UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
 	if (!BlackboardComponent)
-	{
 		return;
-	}
+
 	if (NewTarget)
 	{
-		BlackboardComponent->SetValueAsObject(TargetBlackBoardKeyName, NewTarget);
+		BlackboardComponent->SetValueAsObject(TargetBlackboardKeyName, NewTarget);
 	}
 	else
 	{
-		BlackboardComponent->ClearValue(TargetBlackBoardKeyName);
+		BlackboardComponent->ClearValue(TargetBlackboardKeyName);
 	}
 }
 
@@ -105,21 +107,23 @@ AActor* ACAIController::GetNextPerceivedActor() const
 	{
 		TArray<AActor*> Actors;
 		AIPerceptionComponent->GetPerceivedHostileActors(Actors);
+
 		if (Actors.Num() != 0)
 		{
 			return Actors[0];
 		}
 	}
+
 	return nullptr;
 }
 
 void ACAIController::ForgetActorIfDead(AActor* ActorToForget)
 {
 	const UAbilitySystemComponent* ActorASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(ActorToForget);
+	if (!ActorASC)
+		return;
 
-	if (!ActorASC) return;
-
-	if (ActorASC->HasMatchingGameplayTag(UCAbilitySystemStatics::GetDeathStatsTag()))
+	if (ActorASC->HasMatchingGameplayTag(UCAbilitySystemStatics::GetDeadStatTag()))
 	{
 		for (UAIPerceptionComponent::TActorPerceptionContainer::TIterator Iter = AIPerceptionComponent->GetPerceptualDataIterator(); Iter; ++Iter)
 		{
@@ -134,4 +138,7 @@ void ACAIController::ForgetActorIfDead(AActor* ActorToForget)
 			}
 		}
 	}
-}	
+}
+
+
+

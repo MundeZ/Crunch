@@ -19,7 +19,9 @@ TArray<FHitResult> UCGameplayAbility::GetHitResultFromSweepLocationTargetData(co
 {
 	TArray<FHitResult> OutResults;
 	TSet<AActor*> HitActors;
+
 	IGenericTeamAgentInterface* OwnerTeamInterface = Cast<IGenericTeamAgentInterface>(GetAvatarActorFromActorInfo());
+
 	for (const TSharedPtr<FGameplayAbilityTargetData> TargetData : TargetDataHandle.Data)
 	{
 		FVector StartLoc = TargetData->GetOrigin().GetTranslation();
@@ -54,7 +56,7 @@ TArray<FHitResult> UCGameplayAbility::GetHitResultFromSweepLocationTargetData(co
 					continue;
 				}
 			}
-			
+
 			HitActors.Add(Result.GetActor());
 			OutResults.Add(Result);
 		}
@@ -62,3 +64,4 @@ TArray<FHitResult> UCGameplayAbility::GetHitResultFromSweepLocationTargetData(co
 	
 	return OutResults;
 }
+

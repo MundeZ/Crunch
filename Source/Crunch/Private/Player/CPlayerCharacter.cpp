@@ -64,6 +64,23 @@ void ACPlayerCharacter::HandleLookInput(const FInputActionValue& InputActionValu
 	AddControllerYawInput(InputVal.X);
 }
 
+void ACPlayerCharacter::OnDead()
+{
+	APlayerController* PlayerController = GetController<APlayerController>();
+	if (PlayerController)
+	{
+		DisableInput(PlayerController);
+	}
+}
+void ACPlayerCharacter::OnRespawn()
+{
+	APlayerController* PlayerController = GetController<APlayerController>();
+	if (PlayerController)
+	{
+		EnableInput(PlayerController);
+	}
+}
+
 void ACPlayerCharacter::HandleMoveInput(const FInputActionValue& InputActionValue)
 {
 	FVector2D InputVal = InputActionValue.Get<FVector2D>();
@@ -82,24 +99,6 @@ void ACPlayerCharacter::HandleAbilityInput(const FInputActionValue& InputActionV
 	else
 	{
 		GetAbilitySystemComponent()->AbilityLocalInputReleased((int32)InputID);
-	}
-}
-
-void ACPlayerCharacter::OnDead()
-{
-	APlayerController* PlayerController = GetController<APlayerController>();
-	if (PlayerController)
-	{
-		DisableInput(PlayerController);
-	}
-}
-
-void ACPlayerCharacter::OnRespawn()
-{
-	APlayerController* PlayerController = GetController<APlayerController>();
-	if (PlayerController)
-	{
-		EnableInput(PlayerController);
 	}
 }
 

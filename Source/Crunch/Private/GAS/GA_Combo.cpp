@@ -137,7 +137,9 @@ void UGA_Combo::DoDamage(FGameplayEventData Data)
 
 		FGameplayEffectContextHandle EffectContext = MakeEffectContext(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo());
 		EffectContext.AddHitResult(HitResult);
+
 		EffectSpecHandle.Data->SetContext(EffectContext);
+
 		ApplyGameplayEffectSpecToTarget(GetCurrentAbilitySpecHandle(), CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle, UAbilitySystemBlueprintLibrary::AbilityTargetDataFromActor(HitResult.GetActor()));
 	}
 }

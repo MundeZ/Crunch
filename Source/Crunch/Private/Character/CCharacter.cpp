@@ -4,18 +4,16 @@
 #include "Character/CCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GAS/CAbilitySystemComponent.h"
 #include "GAS/CAttributeSet.h"
 #include "GAS/CAbilitySystemStatics.h"
-#include "Components/CapsuleComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Widgets/OverHeadStatsGauge.h"
-#include "GameplayTagContainer.h"
 #include "Net/UnrealNetwork.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
-
+#include "Widgets/OverHeadStatsGauge.h"
 // Sets default values
 ACCharacter::ACCharacter()
 {
@@ -47,13 +45,13 @@ void ACCharacter::ClientSideInit()
 
 bool ACCharacter::IsLocallyControlledByPlayer() const
 {
-	return GetLocalRole() == ROLE_AutonomousProxy || GetRemoteRole() == ROLE_AutonomousProxy;
+	return GetController() && GetController()->IsLocalPlayerController();
 }
 
 void ACCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(ACCharacter, TeamID)
+	DOREPLIFETIME(ACCharacter, TeamID);
 }
 
 // Called when the game starts or when spawned
@@ -61,6 +59,7 @@ void ACCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	ConfigureOverHeadStatusWidget();
+	MeshRelativeTransform = GetMesh()->GetRelativeTransform();
 
 	PerceptionStimuliSourceComponent->RegisterForSense(UAISense_Sight::StaticClass());
 }
@@ -97,7 +96,7 @@ void ACCharacter::BindGASChangeDelegates()
 {
 	if (CAbilitySystemComponent)
 	{
-		CAbilitySystemComponent->RegisterGameplayTagEvent(UCAbilitySystemStatics::GetDeathStatsTag()).AddUObject(this, &ACCharacter::DeathTagUpdated);
+		CAbilitySystemComponent->RegisterGameplayTagEvent(UCAbilitySystemStatics::GetDeadStatTag()).AddUObject(this, &ACCharacter::DeathTagUpdated);
 	}
 }
 
@@ -161,21 +160,43 @@ void ACCharacter::SetStatusGaugeEnabled(bool bIsEnabled)
 	}
 }
 
+void ACCharacter::DeathMontageFinished()
+{
+	SetRagdollEnabled(true);
+}
+
+void ACCharacter::SetRagdollEnabled(bool bIsEnabled)
+{
+	if (bIsEnabled)
+	{
+		GetMesh()->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+		GetMesh()->SetSimulatePhysics(true);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	}
+	else
+	{
+		GetMesh()->SetSimulatePhysics(false);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		GetMesh()->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		GetMesh()->SetRelativeTransform(MeshRelativeTransform);
+	}
+}
+
 void ACCharacter::PlayDeathAnimation()
 {
 	if (DeathMontage)
 	{
-		PlayAnimMontage(DeathMontage);
+		float MontageDuration = PlayAnimMontage(DeathMontage);
+		GetWorldTimerManager().SetTimer(DeathMontageTimerHandle, this, &ACCharacter::DeathMontageFinished, MontageDuration + DeathMontageFinishTimeShift);
 	}
 }
 
 void ACCharacter::StartDeathSequence()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Start Death Sequence"));
 	OnDead();
 	PlayDeathAnimation();
 	SetStatusGaugeEnabled(false);
-	
+
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SetAIPerceptionStimuliSourceEnabled(false);
@@ -183,9 +204,9 @@ void ACCharacter::StartDeathSequence()
 
 void ACCharacter::Respawn()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Respawn"));
 	OnRespawn();
 	SetAIPerceptionStimuliSourceEnabled(true);
+	SetRagdollEnabled(false);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	GetMesh()->GetAnimInstance()->StopAllMontages(0.f);
@@ -199,7 +220,7 @@ void ACCharacter::Respawn()
 			SetActorTransform(StartSpot->GetActorTransform());
 		}
 	}
-	
+
 	if (CAbilitySystemComponent)
 	{
 		CAbilitySystemComponent->ApplyFullStatEffect();
@@ -208,12 +229,10 @@ void ACCharacter::Respawn()
 
 void ACCharacter::OnDead()
 {
-	
 }
 
 void ACCharacter::OnRespawn()
 {
-	
 }
 
 void ACCharacter::SetGenericTeamId(const FGenericTeamId& NewTeamID)
@@ -228,7 +247,10 @@ FGenericTeamId ACCharacter::GetGenericTeamId() const
 
 void ACCharacter::SetAIPerceptionStimuliSourceEnabled(bool bIsEnabled)
 {
-	if (!PerceptionStimuliSourceComponent) return;
+	if (!PerceptionStimuliSourceComponent)
+	{
+		return;
+	}
 
 	if (bIsEnabled)
 	{
@@ -238,6 +260,5 @@ void ACCharacter::SetAIPerceptionStimuliSourceEnabled(bool bIsEnabled)
 	{
 		PerceptionStimuliSourceComponent->UnregisterFromPerceptionSystem();
 	}
-	
 }
 

@@ -29,14 +29,14 @@ private:
 
 	void TryCommitCombo();
 
+	UPROPERTY(EditDefaultsOnly, Category = "Targetting")
+	float TargetSweepSphereRadius = 30.f;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Effect")
 	TSubclassOf<UGameplayEffect> DefaultDamageEffect;
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Effect")
 	TMap<FName, TSubclassOf<UGameplayEffect>> DamageEffectMap;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Targetting")
-	float TargetSweepSphereRadius = 30.f;
-	
 	TSubclassOf<UGameplayEffect> GetDamageEffectForCurrentCombo() const;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
