@@ -6,6 +6,8 @@
 #include "AIController.h"
 #include "CAIController.generated.h"
 
+struct FAIStimulus;
+struct FGameplayTag;
 /**
  * 
  */
@@ -43,4 +45,9 @@ private:
 	AActor* GetNextPerceivedActor() const;
 
 	void ForgetActorIfDead(AActor* ActorToForget);
+
+	void ClearAndDisableAllSenses();
+	void EnableAllSenses();
+
+	void PawnDeadTagUpdated(const FGameplayTag Tag, int32 NewCount);
 };
