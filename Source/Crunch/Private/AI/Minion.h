@@ -11,11 +11,21 @@ UCLASS()
 class AMinion : public ACCharacter
 {
 	GENERATED_BODY()
+
 public:
 	virtual void SetGenericTeamId(const FGenericTeamId& NewTeamId) override;
+
+	bool IsActive() const;
+	void Activate();
+	void SetGoal(AActor* Goal);
+
 private:
 	void PickSkinBaseOnTeamID();
 	virtual void OnRep_TeamID() override;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	FName GoalBlackBoardKeyName = "Goal";
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Visual")
 	TMap<FGenericTeamId, USkeletalMesh*> SkinMap;
 };
