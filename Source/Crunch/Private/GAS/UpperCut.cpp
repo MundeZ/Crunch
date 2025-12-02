@@ -7,7 +7,8 @@
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 
 void UUpperCut::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-                                const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+                                const FGameplayAbilityActivationInfo ActivationInfo,
+                                const FGameplayEventData* TriggerEventData)
 {
 	if (!K2_CommitAbility())
 	{
@@ -16,14 +17,16 @@ void UUpperCut::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 	}
 	if (HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo))
 	{
-		UAbilityTask_PlayMontageAndWait* PlayUpperCutMontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, UpperCutMontage);
+		UAbilityTask_PlayMontageAndWait* PlayUpperCutMontageTask =
+			UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, UpperCutMontage);
 		PlayUpperCutMontageTask->OnBlendOut.AddDynamic(this, &UUpperCut::K2_EndAbility);
 		PlayUpperCutMontageTask->OnCancelled.AddDynamic(this, &UUpperCut::K2_EndAbility);
 		PlayUpperCutMontageTask->OnInterrupted.AddDynamic(this, &UUpperCut::K2_EndAbility);
 		PlayUpperCutMontageTask->OnCompleted.AddDynamic(this, &UUpperCut::K2_EndAbility);
 		PlayUpperCutMontageTask->ReadyForActivation();
 
-		UAbilityTask_WaitGameplayEvent* WaitLaunchEventTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, GetUpperCutLaunchTag());
+		UAbilityTask_WaitGameplayEvent* WaitLaunchEventTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
+			this, GetUpperCutLaunchTag());
 		WaitLaunchEventTask->EventReceived.AddDynamic(this, &UUpperCut::StartLaunching);
 		WaitLaunchEventTask->ReadyForActivation();
 	}
@@ -36,12 +39,14 @@ FGameplayTag UUpperCut::GetUpperCutLaunchTag()
 
 void UUpperCut::StartLaunching(FGameplayEventData EventData)
 {
-	TArray<FHitResult> TargetHitResult = GetHitResultFromSweepLocationTargetData(EventData.TargetData, TargetSweepSphereRadius, ETeamAttitude::Hostile, ShouldDrawDebug());
 	if (K2_HasAuthority())
 	{
+		TArray<FHitResult> TargetHitResult = GetHitResultFromSweepLocationTargetData(
+			EventData.TargetData, TargetSweepSphereRadius, ETeamAttitude::Hostile, ShouldDrawDebug());
+		PushTarget(GetAvatarActorFromActorInfo(), FVector::UpVector * UpperCutLaunchSpeed); 
 		for (const FHitResult& HitResult : TargetHitResult)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("I Hit %s"), *HitResult.GetActor()->GetName());
+			PushTarget(HitResult.GetActor(), FVector::UpVector * UpperCutLaunchSpeed);			
 		}
 	}
 }
