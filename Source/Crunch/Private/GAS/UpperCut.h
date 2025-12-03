@@ -16,6 +16,8 @@ class UUpperCut : public UCGameplayAbility
 public:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 private:
+	UPROPERTY(EditDefaultsOnly, Category = "Launch") 
+	TSubclassOf<UGameplayEffect> LaunchDamageEffect;
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* UpperCutMontage;
 	

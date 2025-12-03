@@ -43,10 +43,12 @@ void UUpperCut::StartLaunching(FGameplayEventData EventData)
 	{
 		TArray<FHitResult> TargetHitResult = GetHitResultFromSweepLocationTargetData(
 			EventData.TargetData, TargetSweepSphereRadius, ETeamAttitude::Hostile, ShouldDrawDebug());
-		PushTarget(GetAvatarActorFromActorInfo(), FVector::UpVector * UpperCutLaunchSpeed); 
+		PushTarget(GetAvatarActorFromActorInfo(), FVector::UpVector * UpperCutLaunchSpeed);
 		for (const FHitResult& HitResult : TargetHitResult)
 		{
-			PushTarget(HitResult.GetActor(), FVector::UpVector * UpperCutLaunchSpeed);			
+			PushTarget(HitResult.GetActor(), FVector::UpVector * UpperCutLaunchSpeed);
+			ApplyGameplayEffectToHitResult(HitResult, LaunchDamageEffect,
+			                               GetAbilityLevel(CurrentSpecHandle, CurrentActorInfo));
 		}
 	}
 }
