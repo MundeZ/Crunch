@@ -50,4 +50,6 @@ private:
 	void EnableAllSenses();
 
 	void PawnDeadTagUpdated(const FGameplayTag Tag, int32 NewCount);
+	void PawnStunTagUpdated(const FGameplayTag Tag, int32 NewCount);
+	bool bIsPawnDead = false;
 };

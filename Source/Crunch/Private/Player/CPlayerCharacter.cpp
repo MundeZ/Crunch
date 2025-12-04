@@ -66,19 +66,11 @@ void ACPlayerCharacter::HandleLookInput(const FInputActionValue& InputActionValu
 
 void ACPlayerCharacter::OnDead()
 {
-	APlayerController* PlayerController = GetController<APlayerController>();
-	if (PlayerController)
-	{
-		DisableInput(PlayerController);
-	}
+	SetInputEnabledFromController(false);
 }
 void ACPlayerCharacter::OnRespawn()
 {
-	APlayerController* PlayerController = GetController<APlayerController>();
-	if (PlayerController)
-	{
-		EnableInput(PlayerController);
-	}
+	SetInputEnabledFromController(true);
 }
 
 void ACPlayerCharacter::HandleMoveInput(const FInputActionValue& InputActionValue)
@@ -100,6 +92,34 @@ void ACPlayerCharacter::HandleAbilityInput(const FInputActionValue& InputActionV
 	{
 		GetAbilitySystemComponent()->AbilityLocalInputReleased((int32)InputID);
 	}
+}
+
+void ACPlayerCharacter::SetInputEnabledFromController(bool bEnabled)
+{
+	APlayerController* PlayerController = GetController<APlayerController>();
+	if (!PlayerController)
+	{
+		return;
+	}
+	if (bEnabled)
+	{
+		EnableInput(PlayerController);
+	}
+	else
+	{
+		DisableInput(PlayerController);
+	}
+}
+
+void ACPlayerCharacter::OnStun()
+{
+	SetInputEnabledFromController(false);
+}
+
+void ACPlayerCharacter::OnRecoverFromStun()
+{
+	if (IsDead()) return;
+	SetInputEnabledFromController(true);
 }
 
 FVector ACPlayerCharacter::GetLookRightDir() const

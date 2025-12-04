@@ -13,10 +13,12 @@
 UCLASS()
 class UCGameplayAbility : public UGameplayAbility
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
+public:
+    UCGameplayAbility();
 protected:
-	class UAnimInstance* GetOwnerAnimInstance() const;
-	TArray<FHitResult> GetHitResultFromSweepLocationTargetData(const FGameplayAbilityTargetDataHandle& TargetDataHandle, float SphereSweepRadius = 30.f, ETeamAttitude::Type TargetTeam = ETeamAttitude::Hostile, bool bDrawDebug = false, bool bIgnoreSelf = true) const;
+    class UAnimInstance* GetOwnerAnimInstance() const;
+    TArray<FHitResult> GetHitResultFromSweepLocationTargetData(const FGameplayAbilityTargetDataHandle& TargetDataHandle, float SphereSweepRadius = 30.f, ETeamAttitude::Type TargetTeam = ETeamAttitude::Hostile, bool bDrawDebug = false, bool bIgnoreSelf = true) const;
 
 	UFUNCTION()
 	FORCEINLINE bool ShouldDrawDebug() const { return bShouldDrawDebug; }
@@ -28,6 +30,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Debug")
 	bool bShouldDrawDebug = false;
 	
-	UPROPERTY()
-	class ACharacter* AvatarCharacter;
+    UPROPERTY()
+    class ACharacter* AvatarCharacter;
 };
