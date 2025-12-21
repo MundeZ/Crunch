@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GenericTeamAgentInterface.h"
 #include "GameFramework/Actor.h"
+#include "GenericTeamAgentInterface.h"
 #include "MinionBarrack.generated.h"
 
 UCLASS()
@@ -26,11 +26,11 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Spawn")
-	FGenericTeamId BarrackTeamID;
-
+	FGenericTeamId BarrackTeamId;
+	
 	UPROPERTY(EditAnywhere, Category = "Spawn")
 	int MinionPerGroup = 3;
-	
+
 	UPROPERTY(EditAnywhere, Category = "Spawn")
 	float GroupSpawnInterval = 5.f;
 	
@@ -39,20 +39,21 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Spawn")
 	AActor* Goal;
-	
+
 	UPROPERTY(EditAnywhere, Category = "Spawn")
 	TSubclassOf<class AMinion> MinionClass;
 
 	UPROPERTY(EditAnywhere, Category = "Spawn")
-	TArray<class APlayerStart*> SpawnSpot;
+	TArray<class APlayerStart*> SpawnSpots;
 
 	int NextSpawnSpotIndex = -1;
-	
+
 	const APlayerStart* GetNextSpawnSpot();
 
 	void SpawnNewGroup();
-	void SpawnNewMinions(int Amount);
-	AMinion* GetNextAvailableMinion() const;
-	
-	FTimerHandle SpawnIntervalTimerHandler;
+	void SpawnNewMinions(int Amt);
+	AMinion* GetNextAvaliableMinion() const;
+
+	FTimerHandle SpawnIntervalTimerHandle;
+
 };

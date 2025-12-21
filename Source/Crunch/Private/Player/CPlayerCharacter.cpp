@@ -3,12 +3,14 @@
 
 #include "Player/CPlayerCharacter.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/PlayerController.h"
+#include "GAS/CAbilitySystemStatics.h"
 
 ACPlayerCharacter::ACPlayerCharacter()
 {	
@@ -66,11 +68,11 @@ void ACPlayerCharacter::HandleLookInput(const FInputActionValue& InputActionValu
 
 void ACPlayerCharacter::OnDead()
 {
-	SetInputEnabledFromController(false);
+	SetInputEnabledFromPlayerController(false);
 }
 void ACPlayerCharacter::OnRespawn()
 {
-	SetInputEnabledFromController(true);
+	SetInputEnabledFromPlayerController(true);
 }
 
 void ACPlayerCharacter::HandleMoveInput(const FInputActionValue& InputActionValue)
@@ -92,15 +94,22 @@ void ACPlayerCharacter::HandleAbilityInput(const FInputActionValue& InputActionV
 	{
 		GetAbilitySystemComponent()->AbilityLocalInputReleased((int32)InputID);
 	}
+
+	if (InputID == ECAbilityInputID::BasicAttack)
+	{
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this , UCAbilitySystemStatics::GetBasicAttackInputPressedTag(), FGameplayEventData());
+		Server_SendGameplayEventToSelf(UCAbilitySystemStatics::GetBasicAttackInputPressedTag(), FGameplayEventData());
+	}
 }
 
-void ACPlayerCharacter::SetInputEnabledFromController(bool bEnabled)
+void ACPlayerCharacter::SetInputEnabledFromPlayerController(bool bEnabled)
 {
 	APlayerController* PlayerController = GetController<APlayerController>();
 	if (!PlayerController)
 	{
 		return;
 	}
+
 	if (bEnabled)
 	{
 		EnableInput(PlayerController);
@@ -113,13 +122,14 @@ void ACPlayerCharacter::SetInputEnabledFromController(bool bEnabled)
 
 void ACPlayerCharacter::OnStun()
 {
-	SetInputEnabledFromController(false);
+	SetInputEnabledFromPlayerController(false);
 }
 
 void ACPlayerCharacter::OnRecoverFromStun()
 {
 	if (IsDead()) return;
-	SetInputEnabledFromController(true);
+
+	SetInputEnabledFromPlayerController(true);
 }
 
 FVector ACPlayerCharacter::GetLookRightDir() const

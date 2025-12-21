@@ -13,12 +13,8 @@ UCLASS()
 class UGAP_Launched : public UCGameplayAbility
 {
 	GENERATED_BODY()
-
 public:
 	UGAP_Launched();
-
-	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-	                             const FGameplayAbilityActivationInfo ActivationInfo,
-	                             const FGameplayEventData* TriggerEventData) override;
-	static FGameplayTag GetLaunchedAbilityActivationTag();
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+	static FGameplayTag GetLauchedAbilityActiationTag();
 };

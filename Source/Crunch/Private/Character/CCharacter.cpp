@@ -2,6 +2,7 @@
 
 
 #include "Character/CCharacter.h"
+#include "AbilitySystemBlueprintLibrary.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -92,6 +93,16 @@ UAbilitySystemComponent* ACCharacter::GetAbilitySystemComponent() const
 	return CAbilitySystemComponent;
 }
 
+void ACCharacter::Server_SendGameplayEventToSelf_Implementation(const FGameplayTag& EventTag, const FGameplayEventData& EventData)
+{
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, EventTag, EventData);
+}
+
+bool ACCharacter::Server_SendGameplayEventToSelf_Validate(const FGameplayTag& EventTag, const FGameplayEventData& EventData)
+{
+	return true;
+}
+
 void ACCharacter::BindGASChangeDelegates()
 {
 	if (CAbilitySystemComponent)
@@ -115,10 +126,8 @@ void ACCharacter::DeathTagUpdated(const FGameplayTag Tag, int32 NewCount)
 
 void ACCharacter::StunTagUpdated(const FGameplayTag Tag, int32 NewCount)
 {
-    if (IsDead())
-    {
-        return;
-    }
+	if (IsDead()) return;
+
 	if (NewCount != 0)
 	{
 		OnStun();
@@ -194,13 +203,13 @@ bool ACCharacter::IsDead() const
 
 void ACCharacter::RespawnImmediately()
 {
-	if (HasAuthority())
+	if(HasAuthority())
 		GetAbilitySystemComponent()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(UCAbilitySystemStatics::GetDeadStatTag()));
 }
 
 void ACCharacter::DeathMontageFinished()
 {
-	if (IsDead())
+	if(IsDead())
 		SetRagdollEnabled(true);
 }
 
@@ -233,10 +242,12 @@ void ACCharacter::PlayDeathAnimation()
 void ACCharacter::StartDeathSequence()
 {
 	OnDead();
+
 	if (CAbilitySystemComponent)
 	{
 		CAbilitySystemComponent->CancelAllAbilities();
 	}
+
 	PlayDeathAnimation();
 	SetStatusGaugeEnabled(false);
 
@@ -290,7 +301,7 @@ FGenericTeamId ACCharacter::GetGenericTeamId() const
 
 void ACCharacter::OnRep_TeamID()
 {
-	// override in child class
+	//override in child class
 }
 
 void ACCharacter::SetAIPerceptionStimuliSourceEnabled(bool bIsEnabled)

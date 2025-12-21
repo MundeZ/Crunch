@@ -2,15 +2,15 @@
 
 
 #include "AI/MinionBarrack.h"
-
-#include "Minion.h"
+#include "AI/Minion.h"
 #include "GameFramework/PlayerStart.h"
 
 // Sets default values
 AMinionBarrack::AMinionBarrack()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
 }
 
 // Called when the game starts or when spawned
@@ -19,7 +19,7 @@ void AMinionBarrack::BeginPlay()
 	Super::BeginPlay();
 	if (HasAuthority())
 	{
-		GetWorldTimerManager().SetTimer(SpawnIntervalTimerHandler, this, &AMinionBarrack::SpawnNewGroup, GroupSpawnInterval, true);
+		GetWorldTimerManager().SetTimer(SpawnIntervalTimerHandle, this, &AMinionBarrack::SpawnNewGroup, GroupSpawnInterval, true);
 	}
 }
 
@@ -27,76 +27,78 @@ void AMinionBarrack::BeginPlay()
 void AMinionBarrack::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 }
 
 const APlayerStart* AMinionBarrack::GetNextSpawnSpot()
 {
-	if (SpawnSpot.Num() == 0)
+	if (SpawnSpots.Num() == 0)
+	{
 		return nullptr;
-
+	}
+	
 	++NextSpawnSpotIndex;
 
-	if (NextSpawnSpotIndex >= SpawnSpot.Num())
+	if (NextSpawnSpotIndex >= SpawnSpots.Num())
 	{
 		NextSpawnSpotIndex = 0;
 	}
-	return SpawnSpot[NextSpawnSpotIndex];
+
+	return SpawnSpots[NextSpawnSpotIndex];
 }
 
 void AMinionBarrack::SpawnNewGroup()
 {
 	int i = MinionPerGroup;
+
 	while (i > 0)
 	{
-		FTransform SpawnTransform = GetActorTransform();
+		FTransform SpawnTransfrom = GetActorTransform();
 		if (const APlayerStart* NextSpawnSpot = GetNextSpawnSpot())
 		{
-			SpawnTransform = NextSpawnSpot->GetActorTransform();
+			SpawnTransfrom = NextSpawnSpot->GetActorTransform();
 		}
 		
-		AMinion* NexAvailableMinion = GetNextAvailableMinion();
-		if (!NexAvailableMinion)
+		AMinion* NextAvaliableMinon = GetNextAvaliableMinion();
+		if (!NextAvaliableMinon)
 			break;
-		NexAvailableMinion->SetActorTransform(SpawnTransform);
-		NexAvailableMinion->Activate();
+
+		NextAvaliableMinon->SetActorTransform(SpawnTransfrom);
+		NextAvaliableMinon->Activate();
 		--i;
 	}
+
 	SpawnNewMinions(i);
 }
 
-void AMinionBarrack::SpawnNewMinions(int Amount)
+void AMinionBarrack::SpawnNewMinions(int Amt)
 {
-	for (int i = 0; i < Amount; i++)
+	for (int i = 0; i < Amt; i++)
 	{
-		FTransform SpawnTransform = GetActorTransform();
+		FTransform SpawnTransfrom = GetActorTransform();
 		if (const APlayerStart* NextSpawnSpot = GetNextSpawnSpot())
 		{
-			SpawnTransform = NextSpawnSpot->GetActorTransform();
+			SpawnTransfrom = NextSpawnSpot->GetActorTransform();
 		}
 
-		AMinion* NewMinion = GetWorld()->SpawnActorDeferred<AMinion>
-		(
-			MinionClass,
-			SpawnTransform,
-			this,
-			nullptr,
-			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
-		);
-		NewMinion->SetGenericTeamId(BarrackTeamID);
-		NewMinion->FinishSpawning(SpawnTransform);
+		AMinion* NewMinion = GetWorld()->SpawnActorDeferred<AMinion>(MinionClass, SpawnTransfrom, this, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
+		NewMinion->SetGenericTeamId(BarrackTeamId);
+		NewMinion->FinishSpawning(SpawnTransfrom);
 		NewMinion->SetGoal(Goal);
 		MinionPool.Add(NewMinion);
 	}
 }
 
-AMinion* AMinionBarrack::GetNextAvailableMinion() const
+AMinion* AMinionBarrack::GetNextAvaliableMinion() const
 {
-	for (AMinion* Minion : MinionPool)
+	for(AMinion* Minion : MinionPool)
 	{
 		if (!Minion->IsActive())
 		{
 			return Minion;
 		}
 	}
+
 	return nullptr;
 }
+

@@ -6,12 +6,13 @@
 #include "Character/CCharacter.h"
 #include "Minion.generated.h"
 
-
+/**
+ * 
+ */
 UCLASS()
 class AMinion : public ACCharacter
 {
 	GENERATED_BODY()
-
 public:
 	virtual void SetGenericTeamId(const FGenericTeamId& NewTeamId) override;
 
@@ -20,12 +21,13 @@ public:
 	void SetGoal(AActor* Goal);
 
 private:
-	void PickSkinBaseOnTeamID();
+	void PickSkinBasedOnTeamID();
+
 	virtual void OnRep_TeamID() override;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
-	FName GoalBlackBoardKeyName = "Goal";
-	
+	FName GoalBlackboardKeyName = "Goal";
+
 	UPROPERTY(EditDefaultsOnly, Category = "Visual")
 	TMap<FGenericTeamId, USkeletalMesh*> SkinMap;
 };

@@ -40,11 +40,14 @@ public:
 	/**********************************************************************/
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_SendGameplayEventToSelf(const FGameplayTag& EventTag, const FGameplayEventData& EventData);
 private:
 	void BindGASChangeDelegates();
 	void DeathTagUpdated(const FGameplayTag Tag, int32 NewCount);
 	void StunTagUpdated(const FGameplayTag Tag, int32 NewCount);
-	
+
 	UPROPERTY(VisibleDefaultsOnly, Category = "Gameplay Ability")
 	class UCAbilitySystemComponent* CAbilitySystemComponent;
 	UPROPERTY()
@@ -73,6 +76,7 @@ private:
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stun")
 	UAnimMontage* StunMontage;
+
 	virtual void OnStun();
 	virtual void OnRecoverFromStun();
 	/**********************************************************************/
@@ -81,6 +85,7 @@ private:
 public:
 	bool IsDead() const;
 	void RespawnImmediately();
+private:
 	FTransform MeshRelativeTransform;
 	UPROPERTY(EditDefaultsOnly, Category = "Death")
 	float DeathMontageFinishTimeShift = -0.8f;
@@ -115,9 +120,8 @@ private:
 
 	UFUNCTION()
 	virtual void OnRep_TeamID();
-	
 	/**********************************************************************/
-	/*                               AI                                   */
+	/*                               AI                                 */
 	/**********************************************************************/
 private:
 	void SetAIPerceptionStimuliSourceEnabled(bool bIsEnabled);

@@ -5,10 +5,8 @@
 #include "Character/CCharacter.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
-#include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
-#include "GAS/CAbilitySystemComponent.h"
-#include "GameplayTagContainer.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "GAS/CAbilitySystemStatics.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
@@ -49,10 +47,8 @@ void ACAIController::OnPossess(APawn* NewPawn)
 	UAbilitySystemComponent* PawnASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(NewPawn);
 	if (PawnASC)
 	{
-		PawnASC->RegisterGameplayTagEvent(UCAbilitySystemStatics::GetDeadStatTag()).AddUObject(
-			this, &ACAIController::PawnDeadTagUpdated);
-		PawnASC->RegisterGameplayTagEvent(UCAbilitySystemStatics::GetStunStatTag()).AddUObject(
-			this, &ACAIController::PawnStunTagUpdated);
+		PawnASC->RegisterGameplayTagEvent(UCAbilitySystemStatics::GetDeadStatTag()).AddUObject(this, &ACAIController::PawnDeadTagUpdated);
+		PawnASC->RegisterGameplayTagEvent(UCAbilitySystemStatics::GetStunStatTag()).AddUObject(this, &ACAIController::PawnStunTagUpdated);
 	}
 }
 
@@ -176,9 +172,9 @@ void ACAIController::EnableAllSenses()
 	}
 }
 
-void ACAIController::PawnDeadTagUpdated(const FGameplayTag Tag, int32 NewCount)
+void ACAIController::PawnDeadTagUpdated(const FGameplayTag Tag, int32 Count)
 {
-	if (NewCount != 0)
+	if (Count != 0)
 	{
 		GetBrainComponent()->StopLogic("Dead");
 		ClearAndDisableAllSenses();
@@ -192,10 +188,12 @@ void ACAIController::PawnDeadTagUpdated(const FGameplayTag Tag, int32 NewCount)
 	}
 }
 
-void ACAIController::PawnStunTagUpdated(const FGameplayTag Tag, int32 NewCount)
+void ACAIController::PawnStunTagUpdated(const FGameplayTag Tag, int32 Count)
 {
-	if (bIsPawnDead) return;
-	if (NewCount != 0)
+	if (bIsPawnDead)
+		return;
+
+	if (Count != 0)
 	{
 		GetBrainComponent()->StopLogic("Stun");
 	}

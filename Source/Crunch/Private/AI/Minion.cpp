@@ -2,14 +2,13 @@
 
 
 #include "AI/Minion.h"
-
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 void AMinion::SetGenericTeamId(const FGenericTeamId& NewTeamId)
 {
 	Super::SetGenericTeamId(NewTeamId);
-	PickSkinBaseOnTeamID();
+	PickSkinBasedOnTeamID();
 }
 
 bool AMinion::IsActive() const
@@ -28,12 +27,12 @@ void AMinion::SetGoal(AActor* Goal)
 	{
 		if (UBlackboardComponent* BlackboardComponent = AIController->GetBlackboardComponent())
 		{
-			BlackboardComponent->SetValueAsObject(GoalBlackBoardKeyName, Goal);
+			BlackboardComponent->SetValueAsObject(GoalBlackboardKeyName, Goal);
 		}
 	}
 }
 
-void AMinion::PickSkinBaseOnTeamID()
+void AMinion::PickSkinBasedOnTeamID()
 {
 	USkeletalMesh** Skin = SkinMap.Find(GetGenericTeamId());
 	if (Skin)
@@ -44,5 +43,5 @@ void AMinion::PickSkinBaseOnTeamID()
 
 void AMinion::OnRep_TeamID()
 {
-	PickSkinBaseOnTeamID();
+	PickSkinBasedOnTeamID();
 }
