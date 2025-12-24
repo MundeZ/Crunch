@@ -9,6 +9,10 @@
 #include "GenericTeamAgentInterface.h"
 #include "CCharacter.generated.h"
 
+struct FGameplayEventData;
+class UGameplayAbility;
+enum class ECAbilityInputID : uint8;
+
 UCLASS()
 class ACCharacter : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface
 {
@@ -22,6 +26,7 @@ public:
 	bool IsLocallyControlledByPlayer() const;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	const TMap<ECAbilityInputID, TSubclassOf<UGameplayAbility>>& GetAbilities() const;
 protected:
 	// Called when the game starts or when spawned
 
