@@ -75,6 +75,7 @@ void UAbilityGauge::CooldownFinished()
 	CachedCooldownDuration = CachedCooldownTimeRemaining = 0.f;
 	CooldownCounterText->SetVisibility(ESlateVisibility::Hidden); 
 	GetWorld()->GetTimerManager().ClearTimer(CooldownTimerUpdateHandle); 
+	Icon->GetDynamicMaterial()->SetScalarParameterValue(CooldownPercentParamName, 1.f);
 }
 
 void UAbilityGauge::UpdateCooldown()
@@ -82,4 +83,6 @@ void UAbilityGauge::UpdateCooldown()
 	CachedCooldownTimeRemaining -= CooldownUpdateInterval;
 	FNumberFormattingOptions* FormattingOptions = CachedCooldownTimeRemaining > 1 ? &WholeNumberFormattingOptions : &TwoDigitNumberFormattingOptions;
 	CooldownCounterText->SetText(FText::AsNumber(CachedCooldownTimeRemaining, FormattingOptions));
+	
+	Icon->GetDynamicMaterial()->SetScalarParameterValue(CooldownPercentParamName, 1.0f - CachedCooldownTimeRemaining / CachedCooldownDuration);
 }
