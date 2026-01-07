@@ -2,11 +2,26 @@
 
 
 #include "Widgets/AbilityGauge.h"
+#include "Abilities/GameplayAbility.h"
 #include "Components/Image.h"
+#include "Components/TextBlock.h"
+#include "GAS/CAbilitySystemStatics.h"
+
+void UAbilityGauge::NativeConstruct()
+{
+	CooldownCounterText->SetVisibility(ESlateVisibility::Hidden);
+}
 
 void UAbilityGauge::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
 	IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
+	AbilityCDO = Cast<UGameplayAbility>(ListItemObject);
+	
+	const float CooldownDuration = UCAbilitySystemStatics::GetStaticCooldownDurationForAbility(AbilityCDO);
+	const float Cost = UCAbilitySystemStatics::GetStaticCostForAbility(AbilityCDO);
+	
+	CooldownDurationText->SetText(FText::AsNumber(CooldownDuration));
+	CostText->SetText(FText::AsNumber(Cost));
 }
 
 void UAbilityGauge::ConfigureWithWidgetData(const FAbilityWidgetData* WidgetData)
