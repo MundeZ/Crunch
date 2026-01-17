@@ -22,7 +22,7 @@ enum class ECAbilityInputID : uint8
 };
 
 USTRUCT(BlueprintType)
-struct FGenericDamageEffectDef
+struct FGenericDamgeEffectDef
 {
 	GENERATED_BODY()
 

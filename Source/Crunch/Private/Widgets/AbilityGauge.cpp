@@ -2,13 +2,13 @@
 
 
 #include "Widgets/AbilityGauge.h"
-
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+
 #include "Abilities/GameplayAbility.h"
+#include "GAS/CAbilitySystemStatics.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
-#include "GAS/CAbilitySystemStatics.h"
 
 void UAbilityGauge::NativeConstruct()
 {
@@ -19,7 +19,8 @@ void UAbilityGauge::NativeConstruct()
 	{
 		OwnerASC->AbilityCommittedCallbacks.AddUObject(this, &UAbilityGauge::AbilityCommitted);
 	}
-	WholeNumberFormattingOptions.MaximumFractionalDigits = 0;
+
+	WholeNumberFormattionOptions.MaximumFractionalDigits = 0;
 	TwoDigitNumberFormattingOptions.MaximumFractionalDigits = 2;
 }
 
@@ -27,10 +28,10 @@ void UAbilityGauge::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
 	IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
 	AbilityCDO = Cast<UGameplayAbility>(ListItemObject);
-	
-	const float CooldownDuration = UCAbilitySystemStatics::GetStaticCooldownDurationForAbility(AbilityCDO);
-	const float Cost = UCAbilitySystemStatics::GetStaticCostForAbility(AbilityCDO);
-	
+
+	float CooldownDuration = UCAbilitySystemStatics::GetStaticCooldownDurationForAbility(AbilityCDO);
+	float Cost = UCAbilitySystemStatics::GetStaticCostForAbility(AbilityCDO);
+
 	CooldownDurationText->SetText(FText::AsNumber(CooldownDuration));
 	CostText->SetText(FText::AsNumber(Cost));
 }
@@ -50,10 +51,8 @@ void UAbilityGauge::AbilityCommitted(UGameplayAbility* Ability)
 		float CooldownTimeRemaining = 0.f;
 		float CooldownDuration = 0.f;
 
-		Ability->GetCooldownTimeRemainingAndDuration(Ability->GetCurrentAbilitySpecHandle(),
-		                                             Ability->GetCurrentActorInfo(), 
-		                                             CooldownTimeRemaining,
-		                                             CooldownDuration);
+		Ability->GetCooldownTimeRemainingAndDuration(Ability->GetCurrentAbilitySpecHandle(), Ability->GetCurrentActorInfo(), CooldownTimeRemaining, CooldownDuration);
+
 		StartCooldown(CooldownTimeRemaining, CooldownDuration);
 	}
 }
@@ -63,26 +62,26 @@ void UAbilityGauge::StartCooldown(float CooldownTimeRemaining, float CooldownDur
 	CooldownDurationText->SetText(FText::AsNumber(CooldownDuration));
 	CachedCooldownDuration = CooldownDuration;
 	CachedCooldownTimeRemaining = CooldownTimeRemaining;
-	
+
 	CooldownCounterText->SetVisibility(ESlateVisibility::Visible);
-	
-	GetWorld()->GetTimerManager().SetTimer(CooldownTimerHandle, this, &UAbilityGauge::CooldownFinished, CachedCooldownTimeRemaining, false);
-	GetWorld()->GetTimerManager().SetTimer(CooldownTimerUpdateHandle, this, &UAbilityGauge::UpdateCooldown, CooldownUpdateInterval, true, 0.1f);
+
+	GetWorld()->GetTimerManager().SetTimer(CooldownTimerHandle, this, &UAbilityGauge::CooldownFinished, CachedCooldownTimeRemaining);
+	GetWorld()->GetTimerManager().SetTimer(CooldownTimerUpdateHandle, this, &UAbilityGauge::UpdateCooldown, CooldownUpdateInterval, true, 0.f);
 }
 
 void UAbilityGauge::CooldownFinished()
 {
 	CachedCooldownDuration = CachedCooldownTimeRemaining = 0.f;
-	CooldownCounterText->SetVisibility(ESlateVisibility::Hidden); 
-	GetWorld()->GetTimerManager().ClearTimer(CooldownTimerUpdateHandle); 
-	Icon->GetDynamicMaterial()->SetScalarParameterValue(CooldownPercentParamName, 1.f);
+	CooldownCounterText->SetVisibility(ESlateVisibility::Hidden);
+	GetWorld()->GetTimerManager().ClearTimer(CooldownTimerUpdateHandle);
+	Icon->GetDynamicMaterial()->SetScalarParameterValue(CooldownPercentParamname, 1.f);
 }
 
 void UAbilityGauge::UpdateCooldown()
 {
 	CachedCooldownTimeRemaining -= CooldownUpdateInterval;
-	FNumberFormattingOptions* FormattingOptions = CachedCooldownTimeRemaining > 1 ? &WholeNumberFormattingOptions : &TwoDigitNumberFormattingOptions;
+	FNumberFormattingOptions* FormattingOptions = CachedCooldownTimeRemaining > 1 ? &WholeNumberFormattionOptions : &TwoDigitNumberFormattingOptions;
 	CooldownCounterText->SetText(FText::AsNumber(CachedCooldownTimeRemaining, FormattingOptions));
-	
-	Icon->GetDynamicMaterial()->SetScalarParameterValue(CooldownPercentParamName, 1.0f - CachedCooldownTimeRemaining / CachedCooldownDuration);
+
+	Icon->GetDynamicMaterial()->SetScalarParameterValue(CooldownPercentParamname, 1.0f - CachedCooldownTimeRemaining / CachedCooldownDuration);
 }

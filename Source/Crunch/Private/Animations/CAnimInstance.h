@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #pragma once
+
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "GameplayTagContainer.h"
 #include "CAnimInstance.generated.h"
 
-struct FGameplayTag;
 /**
  * 
  */
@@ -38,11 +38,11 @@ public:
 	FORCEINLINE float GetYawSpeed() const { return YawSpeed; }
 
 	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
-	FORCEINLINE float GetRightSpeed() const { return RightSpeed; }
-	
-	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
 	FORCEINLINE float GetFwdSpeed() const { return FwdSpeed; }
-	
+
+	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
+	FORCEINLINE float GetRightSpeed() const { return RightSpeed; }
+
 	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
 	FORCEINLINE float GetSmoothedYawSpeed() const { return SmoothedYawSpeed; }
 
@@ -53,16 +53,16 @@ public:
 	FORCEINLINE bool GetIsOnGround() const { return !bIsJumping; }
 
 	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
+	FORCEINLINE bool GetIsAimming() const { return bIsAimming; }
+
+	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
 	FORCEINLINE float GetLookYawOffset() const { return LookRotOffset.Yaw; }
 
 	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
-	FORCEINLINE bool GetIsAiming() const { return bIsAiming; }
-	
+	FORCEINLINE float GetLookPitchOffset() const { return LookRotOffset.Pitch; }
+
 	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
 	bool ShouldDoFullBody() const;
-	
-	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
-	FORCEINLINE float GetLookPitchOffset() const { return LookRotOffset.Pitch; }
 private:
 	void OwnerAimTagChanged(const FGameplayTag Tag, int32 NewCount);
 	UPROPERTY()
@@ -77,7 +77,7 @@ private:
 	float FwdSpeed;
 	float RightSpeed;
 	bool bIsJumping;
-	bool bIsAiming;
+	bool bIsAimming;
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	float YawSpeedSmoothLerpSpeed = 1.f;
 

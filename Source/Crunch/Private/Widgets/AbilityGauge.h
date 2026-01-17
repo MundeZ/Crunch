@@ -11,20 +11,23 @@ USTRUCT(BlueprintType)
 struct FAbilityWidgetData : public FTableRowBase
 {
 	GENERATED_BODY()
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class UGameplayAbility> AbilityClass;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName AbilityName;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftObjectPtr<UTexture2D> Icon;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText Description;
 };
 
+/**
+ * 
+ */
 UCLASS()
 class UAbilityGauge : public UUserWidget, public IUserObjectListEntry
 {
@@ -36,13 +39,13 @@ public:
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Cooldown")
 	float CooldownUpdateInterval = 0.1f;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Visual")
 	FName IconMaterialParamName = "Icon";
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Visual")
-	FName CooldownPercentParamName = "Percent";
-	
+	FName CooldownPercentParamname = "Percent";
+
 	UPROPERTY(meta=(BindWidget))
 	class UImage* Icon;
 
@@ -54,23 +57,23 @@ private:
 
 	UPROPERTY(meta=(BindWidget))
 	class UTextBlock* CostText;
-	
+
 	UPROPERTY()
 	class UGameplayAbility* AbilityCDO;
-	
+
 	void AbilityCommitted(UGameplayAbility* Ability);
-	
+
 	void StartCooldown(float CooldownTimeRemaining, float CooldownDuration);
-	
+
 	float CachedCooldownDuration;
 	float CachedCooldownTimeRemaining;
-	
+
 	FTimerHandle CooldownTimerHandle;
 	FTimerHandle CooldownTimerUpdateHandle;
-	
-	FNumberFormattingOptions WholeNumberFormattingOptions;
+
+	FNumberFormattingOptions WholeNumberFormattionOptions;
 	FNumberFormattingOptions TwoDigitNumberFormattingOptions;
-	
+
 	void CooldownFinished();
 	void UpdateCooldown();
 };

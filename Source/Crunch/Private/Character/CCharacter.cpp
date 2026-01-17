@@ -151,16 +151,16 @@ void ACCharacter::AimTagUpdated(const FGameplayTag Tag, int32 NewCount)
 	SetIsAimming(NewCount != 0);
 }
 
-void ACCharacter::SetIsAimming(bool bIsAiming)
+void ACCharacter::SetIsAimming(bool bIsAimming)
 {
-	bUseControllerRotationYaw = bIsAiming;
-	GetCharacterMovement()->bOrientRotationToMovement = !bIsAiming;
-	OnAimStateChanged(bIsAiming);
+	bUseControllerRotationYaw = bIsAimming;
+	GetCharacterMovement()->bOrientRotationToMovement = !bIsAimming;
+	OnAimStateChanged(bIsAimming);
 }
 
-void ACCharacter::OnAimStateChanged(bool bIsAiming)
+void ACCharacter::OnAimStateChanged(bool bIsAimming)
 {
-	// Override in child class 	
+	//Override in child class
 }
 
 void ACCharacter::ConfigureOverHeadStatusWidget()
@@ -274,7 +274,7 @@ void ACCharacter::StartDeathSequence()
 	PlayDeathAnimation();
 	SetStatusGaugeEnabled(false);
 
-	// GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	//GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SetAIPerceptionStimuliSourceEnabled(false);
 }
@@ -285,7 +285,7 @@ void ACCharacter::Respawn()
 	SetAIPerceptionStimuliSourceEnabled(true);
 	SetRagdollEnabled(false);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	//  GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	//GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	GetMesh()->GetAnimInstance()->StopAllMontages(0.f);
 	SetStatusGaugeEnabled(true);
 

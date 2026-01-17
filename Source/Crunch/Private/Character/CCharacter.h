@@ -3,15 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GAS/CGameplayAbilityTypes.h"
 #include "GameFramework/Character.h"
 #include "GameplayTagContainer.h"
 #include "AbilitySystemInterface.h"
 #include "GenericTeamAgentInterface.h"
 #include "CCharacter.generated.h"
-
-struct FGameplayEventData;
-class UGameplayAbility;
-enum class ECAbilityInputID : uint8;
 
 UCLASS()
 class ACCharacter : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface
@@ -25,8 +22,8 @@ public:
 	void ClientSideInit();
 	bool IsLocallyControlledByPlayer() const;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
 	const TMap<ECAbilityInputID, TSubclassOf<UGameplayAbility>>& GetAbilities() const;
+
 protected:
 	// Called when the game starts or when spawned
 
@@ -53,8 +50,9 @@ private:
 	void DeathTagUpdated(const FGameplayTag Tag, int32 NewCount);
 	void StunTagUpdated(const FGameplayTag Tag, int32 NewCount);
 	void AimTagUpdated(const FGameplayTag Tag, int32 NewCount);
-	void SetIsAimming(bool bIsAiming);
-	virtual void OnAimStateChanged(bool bIsAiming);
+	void SetIsAimming(bool bIsAimming);
+	virtual void OnAimStateChanged(bool bIsAimming);
+
 	UPROPERTY(VisibleDefaultsOnly, Category = "Gameplay Ability")
 	class UCAbilitySystemComponent* CAbilitySystemComponent;
 	UPROPERTY()

@@ -7,7 +7,6 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GAS/CAbilitySystemStatics.h"
-#include "GameplayTagContainer.h"
 #include "Kismet/KismetMathLibrary.h"
 
 void UCAnimInstance::NativeInitializeAnimation()
@@ -17,6 +16,7 @@ void UCAnimInstance::NativeInitializeAnimation()
 	{
 		OwnerMovementComp = OwnerCharacter->GetCharacterMovement();
 	}
+
 	UAbilitySystemComponent* OwnerASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TryGetPawnOwner());
 	if (OwnerASC)
 	{
@@ -29,8 +29,7 @@ void UCAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	if (OwnerCharacter)
 	{
 		FVector Velocity = OwnerCharacter->GetVelocity();
-		Speed = Velocity.Size();
-		Speed = OwnerCharacter->GetVelocity().Length();
+		Speed = Velocity.Length();
 		FRotator BodyRot = OwnerCharacter->GetActorRotation();
 		FRotator BodyRotDelta = UKismetMathLibrary::NormalizedDeltaRotator(BodyRot, BodyPrevRot);
 		BodyPrevRot = BodyRot;
@@ -39,7 +38,7 @@ void UCAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		SmoothedYawSpeed = UKismetMathLibrary::FInterpTo(SmoothedYawSpeed, YawSpeed, DeltaSeconds, YawSpeedSmoothLerpSpeed);
 		FRotator ControlRot = OwnerCharacter->GetBaseAimRotation();
 		LookRotOffset = UKismetMathLibrary::NormalizedDeltaRotator(ControlRot, BodyRot);
-		
+
 		FwdSpeed = Velocity.Dot(ControlRot.Vector());
 		RightSpeed = -Velocity.Dot(ControlRot.Vector().Cross(FVector::UpVector));
 	}
@@ -55,13 +54,12 @@ void UCAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 
 }
 
-
 bool UCAnimInstance::ShouldDoFullBody() const
 {
-	return (GetSpeed() <= 0) && !(GetIsAiming());
+	return (GetSpeed() <= 0) && !(GetIsAimming());
 }
 
 void UCAnimInstance::OwnerAimTagChanged(const FGameplayTag Tag, int32 NewCount)
 {
-	bIsAiming = NewCount != 0;
+	bIsAimming = NewCount != 0;
 }
