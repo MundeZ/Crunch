@@ -15,21 +15,27 @@ class ATargetActor_GroundPick : public AGameplayAbilityTargetActor
 	GENERATED_BODY()
 public:
 	ATargetActor_GroundPick();
-	
+
 	void SetTargetAreaRadius(float NewRadius);
+	FORCEINLINE void SetTargetTraceRange(float NewRange) { TargetTraceRange = NewRange; }
 	virtual void ConfirmTargetingAndContinue() override;
-	void SetTargetOptions(bool bTargetFriendly, bool bTargetEnemy = true);
-	
+	void SetTargetOptions(bool bTargetFriendly, bool bTargetEnenmy = true);
+	FORCEINLINE void SetShouldDrawDebug(bool bDrawDebug) { bShouldDrawDebug = bDrawDebug; }
+
 protected:
+
 	bool bShouldTargetEnemy = true;
-	bool bShouldTargetFriendl = false;
-	
-	virtual void Tick(float DeltaTime) override;	
+	bool bShouldTargetFriendly = false;
+
+	virtual void Tick(float DeltaTime) override;
+
 	FVector GetTargetPoint() const;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Targeting")
 	float TargetAreaRadius = 300.f;
-	
-	UPROPERTY(EditAnywhere, Category = "Targeting")
-	float TargetTraceRange = 1000.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Targeting")
+	float TargetTraceRange = 2000.f;
+
+	bool bShouldDrawDebug = false;
 };

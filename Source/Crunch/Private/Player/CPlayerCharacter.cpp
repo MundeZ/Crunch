@@ -19,7 +19,7 @@ ACPlayerCharacter::ACPlayerCharacter()
 	CameraBoom->SetupAttachment(GetRootComponent());
 	CameraBoom->bUsePawnControlRotation = true;
 	CameraBoom->ProbeChannel = ECC_SpringArm;
-	
+
 	ViewCam = CreateDefaultSubobject<UCameraComponent>("View Cam");
 	ViewCam->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 

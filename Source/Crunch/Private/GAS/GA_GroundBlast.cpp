@@ -2,8 +2,8 @@
 
 
 #include "GAS/GA_GroundBlast.h"
-
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "GAS/CAbilitySystemStatics.h"
 #include "GAS/TargetActor_GroundPick.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
@@ -36,18 +36,22 @@ void UGA_GroundBlast::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 
 	AGameplayAbilityTargetActor* TargetActor;
 	WaitTargetDataTask->BeginSpawningActor(this, TargetActorClass, TargetActor);
+
+	ATargetActor_GroundPick* GroundPickActor = Cast<ATargetActor_GroundPick>(TargetActor);
+	if (GroundPickActor)
+	{
+		GroundPickActor->SetShouldDrawDebug(ShouldDrawDebug());
+		GroundPickActor->SetTargetAreaRadius(TargetAreaRadius);
+		GroundPickActor->SetTargetTraceRange(TargetTraceRange);
+	}
+
 	WaitTargetDataTask->FinishSpawningActor(this, TargetActor);
 }
 
 void UGA_GroundBlast::TargetConfirmed(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
-	TArray<AActor*>	TargetActors = UAbilitySystemBlueprintLibrary::GetAllActorsFromTargetData(TargetDataHandle);
-	
-	for (AActor* TargetActor : TargetActors)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Target Actor: %s"), *TargetActor->GetName());
-	}
-	
+	BP_ApplyGameplayEffectToTarget(TargetDataHandle, DamageEffectDef.DamageEffect, GetAbilityLevel(CurrentSpecHandle, CurrentActorInfo));
+
 	UE_LOG(LogTemp, Warning, TEXT("Target Confirmed"));
 	K2_EndAbility();
 }
