@@ -51,8 +51,15 @@ void UGA_GroundBlast::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 void UGA_GroundBlast::TargetConfirmed(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
 	BP_ApplyGameplayEffectToTarget(TargetDataHandle, DamageEffectDef.DamageEffect, GetAbilityLevel(CurrentSpecHandle, CurrentActorInfo));
-
-	UE_LOG(LogTemp, Warning, TEXT("Target Confirmed"));
+	PushTargets(TargetDataHandle, DamageEffectDef.PushVelocity);
+	
+	FGameplayCueParameters BlastingGameplayCueParameters;
+	BlastingGameplayCueParameters.Location = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 1).ImpactPoint;
+	BlastingGameplayCueParameters.RawMagnitude = TargetAreaRadius;
+	
+	GetAbilitySystemComponentFromActorInfo()->ExecuteGameplayCue(BlastGameplayCueTag, BlastingGameplayCueParameters);
+	GetAbilitySystemComponentFromActorInfo()->ExecuteGameplayCue(UCAbilitySystemStatics::GetCameraShakeGameplayCueTag(), BlastingGameplayCueParameters);
+	
 	K2_EndAbility();
 }
 
