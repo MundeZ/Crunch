@@ -21,9 +21,11 @@ public:
 	virtual void ConfirmTargetingAndContinue() override;
 	void SetTargetOptions(bool bTargetFriendly, bool bTargetEnenmy = true);
 	FORCEINLINE void SetShouldDrawDebug(bool bDrawDebug) { bShouldDrawDebug = bDrawDebug; }
-
-protected:
-
+	
+private:
+	UPROPERTY(VisibleAnywhere, Category = "Visual")
+	class UDecalComponent* DecalComp;
+	
 	bool bShouldTargetEnemy = true;
 	bool bShouldTargetFriendly = false;
 
