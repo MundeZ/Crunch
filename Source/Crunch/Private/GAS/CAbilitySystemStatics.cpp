@@ -29,6 +29,26 @@ FGameplayTag UCAbilitySystemStatics::GetAimStatTag()
 	return FGameplayTag::RequestGameplayTag("stats.aim");
 }
 
+FGameplayTag UCAbilitySystemStatics::GetHealthFullStatTag()
+{
+	return FGameplayTag::RequestGameplayTag("stats.health.full");
+}
+
+FGameplayTag UCAbilitySystemStatics::GetHealthEmptyStatTag()
+{
+	return FGameplayTag::RequestGameplayTag("stats.health.empty");
+}
+
+FGameplayTag UCAbilitySystemStatics::GetManaFullStatTag()
+{
+	return FGameplayTag::RequestGameplayTag("stats.mana.full");
+}
+
+FGameplayTag UCAbilitySystemStatics::GetManaEmptyStatTag()
+{
+	return FGameplayTag::RequestGameplayTag("stats.mana.empty");
+}
+
 FGameplayTag UCAbilitySystemStatics::GetCameraShakeGameplayCueTag()
 {
 	return FGameplayTag::RequestGameplayTag("GameplayCue.cameraShake");
