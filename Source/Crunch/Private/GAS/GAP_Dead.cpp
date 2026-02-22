@@ -2,6 +2,7 @@
 
 #include "GAS/GAP_Dead.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "CHeroAttributeSet.h"
 #include "Engine/OverlapResult.h"
@@ -47,6 +48,30 @@ void UGAP_Dead::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 		float TotalExperienceReward = BaseExperienceReward + ExperienceRewardPerExperience * SelfExperience;
 		float TotalGoldReward = BaseGoldReward + GoldRewardPerExperience * SelfExperience;
 		
+		if (Killer)
+		{
+			float KillerExperienceReward = TotalExperienceReward * KillerRewardPortion;
+			float KillerGolReward = TotalGoldReward * KillerRewardPortion;
+			
+			FGameplayEffectSpecHandle EffectSpec = MakeOutgoingGameplayEffectSpec(RewardEffect, 1);	
+			EffectSpec.Data->SetSetByCallerMagnitude(UCAbilitySystemStatics::GetExperienceAttributeTag(), KillerExperienceReward);
+			EffectSpec.Data->SetSetByCallerMagnitude(UCAbilitySystemStatics::GetGoldAttributeTag(), KillerGolReward);
+			
+			K2_ApplyGameplayEffectSpecToTarget(EffectSpec, UAbilitySystemBlueprintLibrary::AbilityTargetDataFromActor(Killer));
+			
+			TotalExperienceReward -= KillerExperienceReward;
+			TotalGoldReward -= KillerGolReward;
+		}
+		
+		float ExperiencePerTarget = TotalExperienceReward / RewardTargets.Num();
+		float GoldPerTarget = TotalGoldReward / RewardTargets.Num();
+		
+		FGameplayEffectSpecHandle EffectSpec = MakeOutgoingGameplayEffectSpec(RewardEffect, 1);	
+		EffectSpec.Data->SetSetByCallerMagnitude(UCAbilitySystemStatics::GetExperienceAttributeTag(), ExperiencePerTarget);
+		EffectSpec.Data->SetSetByCallerMagnitude(UCAbilitySystemStatics::GetGoldAttributeTag(), GoldPerTarget);
+		
+		K2_ApplyGameplayEffectSpecToTarget(EffectSpec, UAbilitySystemBlueprintLibrary::AbilityTargetDataFromActorArray(RewardTargets, true));
+		K2_EndAbility();
 	}
 }
 
