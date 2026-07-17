@@ -119,6 +119,8 @@ void ACCharacter::BindGASChangeDelegates()
 		CAbilitySystemComponent->RegisterGameplayTagEvent(UCAbilitySystemStatics::GetAimStatTag()).AddUObject(this, &ACCharacter::AimTagUpdated);
 		
 		CAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UCAttributeSet::GetMoveSpeedAttribute()).AddUObject(this, &ACCharacter::MoveSpeedChanged);
+		CAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UCAttributeSet::GetMaxHealthAttribute()).AddUObject(this, &ACCharacter::MaxHealthChanged);
+		CAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UCAttributeSet::GetMaxManaAttribute()).AddUObject(this, &ACCharacter::MaxManaChanged);
 	}
 }
 
@@ -170,6 +172,22 @@ void ACCharacter::OnAimStateChanged(bool bIsAimming)
 void ACCharacter::MoveSpeedChanged(const FOnAttributeChangeData& Data)
 {
 	GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
+}
+
+void ACCharacter::MaxHealthChanged(const FOnAttributeChangeData& Data)
+{
+	if (IsValid(CAttributeSet))
+	{
+		CAttributeSet->RescaleHealth();
+	}
+}
+
+void ACCharacter::MaxManaChanged(const FOnAttributeChangeData& Data)
+{
+	if (IsValid(CAttributeSet))
+	{
+		CAttributeSet->RescaleMana();
+	}
 }
 
 void ACCharacter::ConfigureOverHeadStatusWidget()
