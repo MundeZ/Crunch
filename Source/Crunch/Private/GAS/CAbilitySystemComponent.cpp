@@ -72,6 +72,23 @@ void UCAbilitySystemComponent::ServerSideInit()
 	GiveInitialAbilities();
 }
 
+
+void UCAbilitySystemComponent::Client_UpgradeAbilityWithID_Implementation(FGameplayAbilitySpecHandle Handle,
+	int NewLevel)
+{
+	FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle(Handle);
+	if (AbilitySpec)
+	{
+		AbilitySpec->Level = NewLevel;
+		AbilitySpecDirtiedCallbacks.Broadcast(*AbilitySpec);
+	}
+}
+
+bool UCAbilitySystemComponent::Client_UpgradeAbilityWithID_Validate(FGameplayAbilitySpecHandle Handle, int NewLevel)
+{
+	return true;
+}
+
 void UCAbilitySystemComponent::ApplyInitialEffects()
 {
 	if (!GetOwner() || !GetOwner()->HasAuthority())
@@ -129,6 +146,26 @@ bool UCAbilitySystemComponent::IsAtMaxLevel() const
 	
 	return  CurrentLevel >= MaxLevel; 
 	
+}
+
+bool UCAbilitySystemComponent::Server_UpgradeAbilityWithID_Validate(ECAbilityInputID InputID)
+{
+	return true;
+}
+
+void UCAbilitySystemComponent::Server_UpgradeAbilityWithID_Implementation(ECAbilityInputID InputID)
+{
+	bool bFound = false;
+	float UpgradePoint = GetGameplayAttributeValue(UCHeroAttributeSet::GetUpgradePointAttribute(), bFound);
+	if (!bFound || UpgradePoint <= 0) return;
+	
+	FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromInputID(static_cast<int32>(InputID));
+	if (!AbilitySpec || UCAbilitySystemStatics::IsAbilityAtMaxLevel(*AbilitySpec)) return;
+	
+	SetNumericAttributeBase(UCHeroAttributeSet::GetUpgradePointAttribute(), UpgradePoint - 1);
+	AbilitySpec->Level += 1;
+	
+	MarkAbilitySpecDirty(*AbilitySpec);
 }
 
 void UCAbilitySystemComponent::AuthApplyGameplayEffect(TSubclassOf<UGameplayEffect> GameplayEffect, int Level)

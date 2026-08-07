@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayAbilitySpec.h"
 #include "GameplayTagContainer.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "CAbilitySystemStatics.generated.h"
@@ -31,6 +32,7 @@ public:
 	static FGameplayTag GetGoldAttributeTag();
 	
 	static bool IsHero(const AActor* ActorToCheck);
+	static bool IsAbilityAtMaxLevel(const FGameplayAbilitySpec& Spec);
 
 	static float GetStaticCooldownDurationForAbility(const UGameplayAbility* Ability);
 	static float GetStaticCostForAbility(const UGameplayAbility* Ability);

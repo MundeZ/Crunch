@@ -23,6 +23,12 @@ public:
 	//Get the Abilities that is unique for the avatar actor, this do not include Generic/Basic ones
 	const TMap<ECAbilityInputID, TSubclassOf<UGameplayAbility>>& GetAbilities() const;
 	bool IsAtMaxLevel() const;
+	
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_UpgradeAbilityWithID(ECAbilityInputID InputID);
+	
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Client_UpgradeAbilityWithID(FGameplayAbilitySpecHandle Handle, int NewLevel);
 
 private:
 	void ApplyInitialEffects();
