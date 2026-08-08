@@ -27,7 +27,7 @@ public:
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_UpgradeAbilityWithID(ECAbilityInputID InputID);
 	
-	UFUNCTION(Server, Reliable, WithValidation)
+	UFUNCTION(Client, Reliable)
 	void Client_UpgradeAbilityWithID(FGameplayAbilitySpecHandle Handle, int NewLevel);
 
 private:

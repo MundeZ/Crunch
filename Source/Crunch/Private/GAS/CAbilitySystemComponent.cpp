@@ -84,11 +84,6 @@ void UCAbilitySystemComponent::Client_UpgradeAbilityWithID_Implementation(FGamep
 	}
 }
 
-bool UCAbilitySystemComponent::Client_UpgradeAbilityWithID_Validate(FGameplayAbilitySpecHandle Handle, int NewLevel)
-{
-	return true;
-}
-
 void UCAbilitySystemComponent::ApplyInitialEffects()
 {
 	if (!GetOwner() || !GetOwner()->HasAuthority())
