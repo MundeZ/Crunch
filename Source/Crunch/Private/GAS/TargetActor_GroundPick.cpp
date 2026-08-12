@@ -12,11 +12,11 @@
 ATargetActor_GroundPick::ATargetActor_GroundPick()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	
+
 	SetRootComponent(CreateDefaultSubobject<USceneComponent>("Root Comp"));
-	
+
 	DecalComp = CreateDefaultSubobject<UDecalComponent>("Decal Comp");
-	
+
 	DecalComp->SetupAttachment(GetRootComponent());
 }
 
@@ -63,10 +63,10 @@ void ATargetActor_GroundPick::ConfirmTargetingAndContinue()
 	}
 
 	FGameplayAbilityTargetDataHandle TargetData = UAbilitySystemBlueprintLibrary::AbilityTargetDataFromActorArray(TargetActors.Array(), false);
-	
+
 	FGameplayAbilityTargetData_SingleTargetHit* HitLoc = new FGameplayAbilityTargetData_SingleTargetHit;
 	HitLoc->HitResult.ImpactPoint = GetActorLocation();
-	
+
 	TargetData.Add(HitLoc);
 
 	TargetDataReadyDelegate.Broadcast(TargetData);

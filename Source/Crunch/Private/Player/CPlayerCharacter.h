@@ -36,7 +36,7 @@ private:
 	virtual void OnAimStateChanged(bool bIsAimming) override;
 	UPROPERTY()
 	class UCHeroAttributeSet* HeroAttributeSet;
-	
+
 	/*************************************************************/
 	/*                           Input                           */
 	/*************************************************************/
@@ -49,7 +49,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputAction* MoveInputAction;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputAction* LearnAbilityLeaderAction;
 
@@ -61,8 +61,8 @@ private:
 
 	void HandleLookInput(const FInputActionValue& InputActionValue);
 	void HandleMoveInput(const FInputActionValue& InputActionValue);
-	void LearnAbilityLeaderDown(const FInputActionValue& InputActionValue);
-	void LearnAbilityLeaderUp(const FInputActionValue& InputActionValue);
+	void LearnAbiltiyLeaderDown(const FInputActionValue& InputActionValue);
+	void LearnAbiltiyLeaderUp(const FInputActionValue& InputActionValue);
 	bool bIsLearnAbilityLeaderDown = false;
 	void HandleAbilityInput(const FInputActionValue& InputActionValue, ECAbilityInputID InputID);
 	void SetInputEnabledFromPlayerController(bool bEnabled);

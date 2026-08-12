@@ -27,7 +27,7 @@ ACPlayerCharacter::ACPlayerCharacter()
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 720.f, 0.f);
-	
+
 	HeroAttributeSet = CreateDefaultSubobject<UCHeroAttributeSet>("Hero Attribute Set");
 }
 
@@ -55,8 +55,8 @@ void ACPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		EnhancedInputComp->BindAction(JumpInputAction, ETriggerEvent::Triggered, this, &ACPlayerCharacter::Jump);
 		EnhancedInputComp->BindAction(LookInputAction, ETriggerEvent::Triggered, this, &ACPlayerCharacter::HandleLookInput);
 		EnhancedInputComp->BindAction(MoveInputAction, ETriggerEvent::Triggered, this, &ACPlayerCharacter::HandleMoveInput);
-		EnhancedInputComp->BindAction(LearnAbilityLeaderAction, ETriggerEvent::Started, this, &ACPlayerCharacter::LearnAbilityLeaderDown);
-		EnhancedInputComp->BindAction(LearnAbilityLeaderAction, ETriggerEvent::Completed, this, &ACPlayerCharacter::LearnAbilityLeaderUp);
+		EnhancedInputComp->BindAction(LearnAbilityLeaderAction, ETriggerEvent::Started, this, &ACPlayerCharacter::LearnAbiltiyLeaderDown);
+		EnhancedInputComp->BindAction(LearnAbilityLeaderAction, ETriggerEvent::Completed, this, &ACPlayerCharacter::LearnAbiltiyLeaderUp);
 
 		for (const TPair<ECAbilityInputID, UInputAction*>& InputActionPair : GameplayAbilityInputActions)
 		{
@@ -91,12 +91,12 @@ void ACPlayerCharacter::HandleMoveInput(const FInputActionValue& InputActionValu
 	AddMovementInput(GetMoveFwdDir()*InputVal.Y + GetLookRightDir() * InputVal.X);
 }
 
-void ACPlayerCharacter::LearnAbilityLeaderDown(const FInputActionValue& InputActionValue)
+void ACPlayerCharacter::LearnAbiltiyLeaderDown(const FInputActionValue& InputActionValue)
 {
-	bIsLearnAbilityLeaderDown = true;	
+	bIsLearnAbilityLeaderDown = true;
 }
 
-void ACPlayerCharacter::LearnAbilityLeaderUp(const FInputActionValue& InputActionValue)
+void ACPlayerCharacter::LearnAbiltiyLeaderUp(const FInputActionValue& InputActionValue)
 {
 	bIsLearnAbilityLeaderDown = false;
 }
@@ -110,7 +110,7 @@ void ACPlayerCharacter::HandleAbilityInput(const FInputActionValue& InputActionV
 		UpgradeAbilityWithInputID(InputID);
 		return;
 	}
-	
+
 	if (bPressed)
 	{
 		GetAbilitySystemComponent()->AbilityLocalInputPressed((int32)InputID);

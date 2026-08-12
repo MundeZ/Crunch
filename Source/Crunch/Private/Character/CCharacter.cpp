@@ -125,10 +125,10 @@ void ACCharacter::BindGASChangeDelegates()
 		CAbilitySystemComponent->RegisterGameplayTagEvent(UCAbilitySystemStatics::GetDeadStatTag()).AddUObject(this, &ACCharacter::DeathTagUpdated);
 		CAbilitySystemComponent->RegisterGameplayTagEvent(UCAbilitySystemStatics::GetStunStatTag()).AddUObject(this, &ACCharacter::StunTagUpdated);
 		CAbilitySystemComponent->RegisterGameplayTagEvent(UCAbilitySystemStatics::GetAimStatTag()).AddUObject(this, &ACCharacter::AimTagUpdated);
-		
-		CAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UCAttributeSet::GetMoveSpeedAttribute()).AddUObject(this, &ACCharacter::MoveSpeedChanged);
-		CAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UCAttributeSet::GetMaxHealthAttribute()).AddUObject(this, &ACCharacter::MaxHealthChanged);
-		CAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UCAttributeSet::GetMaxManaAttribute()).AddUObject(this, &ACCharacter::MaxManaChanged);
+
+		CAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UCAttributeSet::GetMoveSpeedAttribute()).AddUObject(this, &ACCharacter::MoveSpeedUpdated);
+		CAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UCAttributeSet::GetMaxHealthAttribute()).AddUObject(this, &ACCharacter::MaxHealthUpdated);
+		CAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UCAttributeSet::GetMaxManaAttribute()).AddUObject(this, &ACCharacter::MaxManaUpdated);
 	}
 }
 
@@ -177,12 +177,12 @@ void ACCharacter::OnAimStateChanged(bool bIsAimming)
 	//Override in child class
 }
 
-void ACCharacter::MoveSpeedChanged(const FOnAttributeChangeData& Data)
+void ACCharacter::MoveSpeedUpdated(const FOnAttributeChangeData& Data)
 {
 	GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
 }
 
-void ACCharacter::MaxHealthChanged(const FOnAttributeChangeData& Data)
+void ACCharacter::MaxHealthUpdated(const FOnAttributeChangeData& Data)
 {
 	if (IsValid(CAttributeSet))
 	{
@@ -190,7 +190,7 @@ void ACCharacter::MaxHealthChanged(const FOnAttributeChangeData& Data)
 	}
 }
 
-void ACCharacter::MaxManaChanged(const FOnAttributeChangeData& Data)
+void ACCharacter::MaxManaUpdated(const FOnAttributeChangeData& Data)
 {
 	if (IsValid(CAttributeSet))
 	{

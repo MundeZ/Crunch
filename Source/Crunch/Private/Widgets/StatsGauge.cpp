@@ -2,10 +2,11 @@
 
 
 #include "Widgets/StatsGauge.h"
-#include "Components/Image.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "Components/Image.h"
 #include "Components/TextBlock.h"
+
 
 void UStatsGauge::NativePreConstruct()
 {
@@ -17,9 +18,9 @@ void UStatsGauge::NativeConstruct()
 {
 	Super::NativeConstruct();
 	NumberFormattingOptions.MaximumFractionalDigits = 0;
-
 	APawn* OwnerPlayerPawn = GetOwningPlayerPawn();
-	if (!OwnerPlayerPawn) return;
+	if (!OwnerPlayerPawn)
+		return;
 
 	UAbilitySystemComponent* OwnerASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OwnerPlayerPawn);
 
@@ -28,13 +29,14 @@ void UStatsGauge::NativeConstruct()
 		bool bFound;
 		float AttributeVal = OwnerASC->GetGameplayAttributeValue(Attribute, bFound);
 		SetValue(AttributeVal);
+
 		OwnerASC->GetGameplayAttributeValueChangeDelegate(Attribute).AddUObject(this, &UStatsGauge::AttributeChanged);
 	}
 }
 
-void UStatsGauge::SetValue(float NewValue)
+void UStatsGauge::SetValue(float NewVal)
 {
-	AttributeText->SetText(FText::AsNumber(NewValue, &NumberFormattingOptions));
+	AttributeText->SetText(FText::AsNumber(NewVal, &NumberFormattingOptions));
 }
 
 void UStatsGauge::AttributeChanged(const FOnAttributeChangeData& Data)

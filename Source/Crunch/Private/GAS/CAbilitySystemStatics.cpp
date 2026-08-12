@@ -2,10 +2,10 @@
 
 
 #include "GAS/CAbilitySystemStatics.h"
-
-#include "AbilitySystemComponent.h"
-#include "AbilitySystemInterface.h"
 #include "Abilities/GameplayAbility.h"
+#include "AbilitySystemInterface.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 
 FGameplayTag UCAbilitySystemStatics::GetBasicAttackAbilityTag()
 {
@@ -30,6 +30,11 @@ FGameplayTag UCAbilitySystemStatics::GetStunStatTag()
 FGameplayTag UCAbilitySystemStatics::GetAimStatTag()
 {
 	return FGameplayTag::RequestGameplayTag("stats.aim");
+}
+
+FGameplayTag UCAbilitySystemStatics::GetCameraShakeGameplayCueTag()
+{
+	return FGameplayTag::RequestGameplayTag("GameplayCue.cameraShake");
 }
 
 FGameplayTag UCAbilitySystemStatics::GetHealthFullStatTag()
@@ -84,11 +89,6 @@ bool UCAbilitySystemStatics::IsHero(const AActor* ActorToCheck)
 bool UCAbilitySystemStatics::IsAbilityAtMaxLevel(const FGameplayAbilitySpec& Spec)
 {
 	return Spec.Level >= 4;
-}
-
-FGameplayTag UCAbilitySystemStatics::GetCameraShakeGameplayCueTag()
-{
-	return FGameplayTag::RequestGameplayTag("GameplayCue.cameraShake");
 }
 
 float UCAbilitySystemStatics::GetStaticCooldownDurationForAbility(const UGameplayAbility* Ability)

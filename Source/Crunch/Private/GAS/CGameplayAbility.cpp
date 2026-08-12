@@ -15,15 +15,14 @@ UCGameplayAbility::UCGameplayAbility()
 	ActivationBlockedTags.AddTag(UCAbilitySystemStatics::GetStunStatTag());
 }
 
-bool UCGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Handle,
-	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags,
-	const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
+bool UCGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const
 {
 	FGameplayAbilitySpec* AbilitySpec = ActorInfo->AbilitySystemComponent->FindAbilitySpecFromHandle(Handle);
 	if (AbilitySpec && AbilitySpec->Level <= 0)
 	{
 		return false;
 	}
+
 	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
 }
 
@@ -114,7 +113,7 @@ void UCGameplayAbility::PushTarget(AActor* Target, const FVector& PushVel)
 
 void UCGameplayAbility::PushTargets(const TArray<AActor*>& Targets, const FVector& PushVel)
 {
-	for (AActor* Target : Targets)
+	for(AActor* Target : Targets)
 	{
 		PushTarget(Target, PushVel);
 	}

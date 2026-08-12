@@ -13,15 +13,13 @@ UCLASS()
 class UMMC_LevelBased : public UGameplayModMagnitudeCalculation
 {
 	GENERATED_BODY()
-	
 public:
 	UMMC_LevelBased();
-	
+
 	float CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const override;
-	
 private:
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayAttribute RateAttribute;
-	
-	FGameplayEffectAttributeCaptureDefinition LevelCaptureDefinition;
+
+	FGameplayEffectAttributeCaptureDefinition LevelCaptureDefination;
 };

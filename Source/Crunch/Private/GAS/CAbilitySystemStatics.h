@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayAbilitySpec.h"
 #include "GameplayTagContainer.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "CAbilitySystemStatics.generated.h"
 
 class UGameplayAbility;
+struct FGameplayAbilitySpec;
 /**
  * 
  */
@@ -21,8 +21,8 @@ public:
 	static FGameplayTag GetBasicAttackInputPressedTag();
 	static FGameplayTag GetDeadStatTag();
 	static FGameplayTag GetStunStatTag();
-	static FGameplayTag GetCameraShakeGameplayCueTag();
 	static FGameplayTag GetAimStatTag();
+	static FGameplayTag GetCameraShakeGameplayCueTag();
 	static FGameplayTag GetHealthFullStatTag();
 	static FGameplayTag GetHealthEmptyStatTag();
 	static FGameplayTag GetManaFullStatTag();
@@ -30,7 +30,7 @@ public:
 	static FGameplayTag GetHeroRoleTag();
 	static FGameplayTag GetExperienceAttributeTag();
 	static FGameplayTag GetGoldAttributeTag();
-	
+
 	static bool IsHero(const AActor* ActorToCheck);
 	static bool IsAbilityAtMaxLevel(const FGameplayAbilitySpec& Spec);
 

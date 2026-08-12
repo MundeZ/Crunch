@@ -2,26 +2,25 @@
 
 
 #include "Widgets/LevelGauge.h"
-
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
-#include "GAS/CAbilitySystemStatics.h"
 #include "GAS/CHeroAttributeSet.h"
 
 void ULevelGauge::NativeConstruct()
 {
 	Super::NativeConstruct();
-	
 	NumberFormattingOptions.SetMaximumFractionalDigits(0);
-	
+
 	APawn* OwnerPawn = GetOwningPlayerPawn();
-	if (!OwnerPawn) return;
-	
+	if (!OwnerPawn)
+		return;
+
 	UAbilitySystemComponent* OwnerAbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OwnerPawn);
-	if (!OwnerAbilitySystemComponent) return;
-	
+	if (!OwnerAbilitySystemComponent)
+		return;
+
 	OwnerASC = OwnerAbilitySystemComponent;
 	
 	UpdateGauge(FOnAttributeChangeData());
@@ -34,30 +33,33 @@ void ULevelGauge::NativeConstruct()
 void ULevelGauge::UpdateGauge(const FOnAttributeChangeData& Data)
 {
 	bool bFound;
-	
 	float CurrentExperience = OwnerASC->GetGameplayAttributeValue(UCHeroAttributeSet::GetExperienceAttribute(), bFound);
-	if (!bFound) return;
+	if (!bFound)
+		return;
 	float NextLevelExperience = OwnerASC->GetGameplayAttributeValue(UCHeroAttributeSet::GetNextLevelExperienceAttribute(), bFound);
-	if (!bFound) return;
+	if (!bFound)
+		return;
 	float PrevLevelExperience = OwnerASC->GetGameplayAttributeValue(UCHeroAttributeSet::GetPrevLevelExperienceAttribute(), bFound);
-	if (!bFound) return;
+	if (!bFound)
+		return;
 	float CurrentLevel = OwnerASC->GetGameplayAttributeValue(UCHeroAttributeSet::GetLevelAttribute(), bFound);
-	if (!bFound) return;
-	
+	if (!bFound)
+		return;
+
 	LevelText->SetText(FText::AsNumber(CurrentLevel, &NumberFormattingOptions));
-	
+
 	float Progress = CurrentExperience - PrevLevelExperience;
 	float LevelExpAmt = NextLevelExperience - PrevLevelExperience;
-	
+
 	float Percent = Progress / LevelExpAmt;
-	
+
 	if (NextLevelExperience == 0)
 	{
 		Percent = 1;
 	}
-	
-	if (LevelProgress)
+
+	if (LevelProgressImage)
 	{
-		LevelProgress->GetDynamicMaterial()->SetScalarParameterValue(PercentMaterialParamName, Percent);
+		LevelProgressImage->GetDynamicMaterial()->SetScalarParameterValue(PercentMaterialParamName, Percent);
 	}
 }

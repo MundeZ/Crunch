@@ -23,31 +23,32 @@ void UCAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackD
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0, GetMaxHealth()));
-		SetCachedHealthPercent( GetHealth() / GetMaxHealth());
+		SetCachedHealthPercent(GetHealth()/GetMaxHealth());
 	}
 	if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
 		SetMana(FMath::Clamp(GetMana(), 0, GetMaxMana()));
-		SetCachedManaPercent( GetMana() / GetMaxMana());
+		SetCachedManaPercent(GetMana()/GetMaxMana());
 	}
 }
 
 void UCAttributeSet::RescaleHealth()
 {
-	if (!GetOwningActor()->HasAuthority()) return;
-	
-	if (GetCachedHealthPercent() != 0.f && GetMaxHealth() != 0.f)
+	if (!GetOwningActor()->HasAuthority())
+		return;
+
+	if (GetCachedHealthPercent() != 0 && GetHealth() != 0)
 	{
 		SetHealth(GetMaxHealth() * GetCachedHealthPercent());
 	}
-	
 }
 
 void UCAttributeSet::RescaleMana()
 {
-	if (!GetOwningActor()->HasAuthority()) return;
-	
-	if (GetCachedManaPercent() != 0.f && GetMaxMana() != 0.f)
+	if (!GetOwningActor()->HasAuthority())
+		return;
+
+	if (GetCachedManaPercent() != 0 && GetMana() != 0)
 	{
 		SetMana(GetMaxMana() * GetCachedManaPercent());
 	}
@@ -90,12 +91,11 @@ void UCAttributeSet::OnRep_MoveSpeed(const FGameplayAttributeData& OldValue)
 void UCAttributeSet::GetLifetimeReplicatedProps(TArray< class FLifetimeProperty >& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	
 	DOREPLIFETIME_CONDITION_NOTIFY(UCAttributeSet, Health, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UCAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UCAttributeSet, Mana, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UCAttributeSet, MaxMana, COND_None, REPNOTIFY_Always);
-	
+
 	DOREPLIFETIME_CONDITION_NOTIFY(UCAttributeSet, AttackDamage, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UCAttributeSet, Armor, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UCAttributeSet, MoveSpeed, COND_None, REPNOTIFY_Always);

@@ -55,27 +55,26 @@ void UGA_GroundBlast::TargetConfirmed(const FGameplayAbilityTargetDataHandle& Ta
 		K2_EndAbility();
 		return;
 	}
-	
+
 	if (K2_HasAuthority())
 	{
-		BP_ApplyGameplayEffectToTarget(TargetDataHandle, DamageEffectDef.DamageEffect,
-		                               GetAbilityLevel(CurrentSpecHandle, CurrentActorInfo));
+		BP_ApplyGameplayEffectToTarget(TargetDataHandle, DamageEffectDef.DamageEffect, GetAbilityLevel(CurrentSpecHandle, CurrentActorInfo));
 		PushTargets(TargetDataHandle, DamageEffectDef.PushVelocity);
 	}
-	
-	FGameplayCueParameters BlastingGameplayCueParameters;
-	BlastingGameplayCueParameters.Location = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 1).ImpactPoint;
-	BlastingGameplayCueParameters.RawMagnitude = TargetAreaRadius;
-	
-	GetAbilitySystemComponentFromActorInfo()->ExecuteGameplayCue(BlastGameplayCueTag, BlastingGameplayCueParameters);
-	GetAbilitySystemComponentFromActorInfo()->ExecuteGameplayCue(UCAbilitySystemStatics::GetCameraShakeGameplayCueTag(), BlastingGameplayCueParameters);
-	
+
+	FGameplayCueParameters BlastingGameplayCueParams;
+	BlastingGameplayCueParams.Location = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 1).ImpactPoint;
+	BlastingGameplayCueParams.RawMagnitude = TargetAreaRadius;
+
+	GetAbilitySystemComponentFromActorInfo()->ExecuteGameplayCue(BlastGameplayCueTag, BlastingGameplayCueParams);
+	GetAbilitySystemComponentFromActorInfo()->ExecuteGameplayCue(UCAbilitySystemStatics::GetCameraShakeGameplayCueTag(), BlastingGameplayCueParams);
+
 	UAnimInstance* OwnerAnimInst = GetOwnerAnimInstance();
 	if (OwnerAnimInst)
 	{
 		OwnerAnimInst->Montage_Play(CastMontage);
 	}
-	
+
 	K2_EndAbility();
 }
 

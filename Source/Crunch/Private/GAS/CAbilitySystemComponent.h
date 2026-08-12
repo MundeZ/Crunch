@@ -23,12 +23,12 @@ public:
 	//Get the Abilities that is unique for the avatar actor, this do not include Generic/Basic ones
 	const TMap<ECAbilityInputID, TSubclassOf<UGameplayAbility>>& GetAbilities() const;
 	bool IsAtMaxLevel() const;
-	
+
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_UpgradeAbilityWithID(ECAbilityInputID InputID);
-	
+
 	UFUNCTION(Client, Reliable)
-	void Client_UpgradeAbilityWithID(FGameplayAbilitySpecHandle Handle, int NewLevel);
+	void Client_AbilitySpecLevelUpdated(FGameplayAbilitySpecHandle Handle, int NewLevel);
 
 private:
 	void ApplyInitialEffects();
@@ -43,7 +43,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Ability")
 	TMap<ECAbilityInputID, TSubclassOf<UGameplayAbility>> BasicAbilities;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Ability")
-	class UPA_AbilitySystemGenerics * AbilitySystemGenerics;
+	class UPA_AbilitySystemGenerics* AbilitySystemGenerics;
 };

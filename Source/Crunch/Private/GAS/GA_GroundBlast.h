@@ -20,7 +20,7 @@ public:
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Cue")
 	FGameplayTag BlastGameplayCueTag;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Targeting")
 	float TargetAreaRadius = 300.f;
 
@@ -35,7 +35,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* TargettingMontage;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* CastMontage;
 
