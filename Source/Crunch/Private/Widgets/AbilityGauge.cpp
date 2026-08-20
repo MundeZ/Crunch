@@ -10,6 +10,7 @@
 #include "GAS/CHeroAttributeSet.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "GAS/CAttributeSet.h"
 
 void UAbilityGauge::NativeConstruct()
 {
@@ -21,6 +22,7 @@ void UAbilityGauge::NativeConstruct()
 		OwnerASC->AbilityCommittedCallbacks.AddUObject(this, &UAbilityGauge::AbilityCommitted);
 		OwnerASC->AbilitySpecDirtiedCallbacks.AddUObject(this, &UAbilityGauge::AbilitySpecUpdated);
 		OwnerASC->GetGameplayAttributeValueChangeDelegate(UCHeroAttributeSet::GetUpgradePointAttribute()).AddUObject(this, &UAbilityGauge::UpgradePointUpdated);
+		OwnerASC->GetGameplayAttributeValueChangeDelegate(UCAttributeSet::GetManaAttribute()).AddUObject( this, &UAbilityGauge::ManaUpdated);
 	}
 
 	bool bFound = false;
@@ -121,11 +123,26 @@ void UAbilityGauge::AbilitySpecUpdated(const FGameplayAbilitySpec& AbilitySpec)
 	bIsAbilityLeanred = AbilitySpec.Level > 0;
 	LevelGauge->GetDynamicMaterial()->SetScalarParameterValue(AbilityLevelParamName, AbilitySpec.Level);
 	UpdateCanCast();
+	
+	float NewCooldownDuration = UCAbilitySystemStatics::GetCooldownDurationFor(AbilityCDO, *OwnerAbilitySystemComponent, AbilitySpec.Level);
+	float NewCost = UCAbilitySystemStatics::GetManaCostFor(AbilityCDO, *OwnerAbilitySystemComponent, AbilitySpec.Level);
+	CooldownDurationText->SetText(FText::AsNumber(NewCooldownDuration));
+	CostText->SetText(FText::AsNumber(NewCost));
 }
 
 void UAbilityGauge::UpdateCanCast()
 {
-	Icon->GetDynamicMaterial()->SetScalarParameterValue(CanCastAbilityParamName, bIsAbilityLeanred ? 1 : 0);
+	const FGameplayAbilitySpec* AbilitySpec = GetAbilitySpec();
+	bool bCanCast = bIsAbilityLeanred; 
+	if (AbilitySpec)
+	{
+		if (OwnerAbilitySystemComponent && !UCAbilitySystemStatics::CheckAbilityCost(*AbilitySpec, *OwnerAbilitySystemComponent))
+		{
+			bCanCast = false;
+		}
+	}
+	
+	Icon->GetDynamicMaterial()->SetScalarParameterValue(CanCastAbilityParamName, bCanCast ? 1 : 0);
 }
 
 void UAbilityGauge::UpgradePointUpdated(const FOnAttributeChangeData& Data)
@@ -141,4 +158,9 @@ void UAbilityGauge::UpgradePointUpdated(const FOnAttributeChangeData& Data)
 		}
 	}
 	Icon->GetDynamicMaterial()->SetScalarParameterValue(UpgradePointAvaliableParamName, HasUpgradePoint ? 1 : 0);
+}
+
+void UAbilityGauge::ManaUpdated(const FOnAttributeChangeData& Data)
+{
+	UpdateCanCast();
 }
